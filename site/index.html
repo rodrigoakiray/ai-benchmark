@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fronteira dos LLMs</title>
+  <meta name="description" content="Benchmarks e preços (padrão e batch) dos modelos de linguagem, atualizados toda semana.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M4 26h8v-8h7v-7h9' fill='none' stroke='%230f1a24' stroke-width='3.5' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">Fronteira dos LLMs</a>
+    <div class="topbar-meta">
+      <span id="snapshot-label">Carregando dados…</span>
+      <button type="button" id="theme-toggle" class="ghost">Tema: automático</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title"><span id="hero-leader">Carregando…</span> <span id="hero-value" class="hero-second"></span></h1>
+      <p id="hero-sub" class="lede"></p>
+      <dl id="hero-facts" class="facts"></dl>
+    </section>
+
+    <form class="filters" id="filters" aria-label="Filtros do painel" onsubmit="return false">
+      <fieldset class="segmented">
+        <legend>Preço</legend>
+        <label><input type="radio" name="mode" value="standard" checked><span>Padrão</span></label>
+        <label><input type="radio" name="mode" value="batch"><span>Batch</span></label>
+      </fieldset>
+      <label class="field">
+        <span>Capacidade</span>
+        <select name="metric">
+          <option value="aa_intelligence_index">AA Intelligence Index</option>
+          <option value="eci">Epoch Capabilities Index</option>
+          <option value="arena_elo">Arena Elo (texto)</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Pesos</span>
+        <select name="weights">
+          <option value="all">Abertos e fechados</option>
+          <option value="open">Só abertos</option>
+          <option value="closed">Só fechados</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Lançados</span>
+        <select name="since">
+          <option value="all">Em qualquer data</option>
+          <option value="365">Nos últimos 12 meses</option>
+          <option value="180">Nos últimos 6 meses</option>
+          <option value="90">Nos últimos 3 meses</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Destacar laboratório</span>
+        <select name="highlight" id="highlight-select"><option value="">Escolha até 3</option></select>
+      </label>
+      <label class="field grow">
+        <span>Buscar modelo</span>
+        <input type="search" name="query" placeholder="Ex.: claude, qwen, gpt-6" autocomplete="off">
+      </label>
+      <div id="highlight-chips" class="chips" aria-live="polite"></div>
+    </form>
+
+    <section class="block" aria-labelledby="frontier-title">
+      <div class="block-head">
+        <h2 id="frontier-title">Capacidade por preço</h2>
+        <p class="note" id="frontier-note"></p>
+      </div>
+      <div class="legend" id="frontier-legend"></div>
+      <div class="chart chart-tall" id="chart-frontier" role="img" aria-label="Gráfico de dispersão: capacidade dos modelos versus preço, com a fronteira de Pareto"></div>
+    </section>
+
+    <div class="two-up">
+      <section class="block" aria-labelledby="ranking-title">
+        <div class="block-head">
+          <h2 id="ranking-title">Os 15 mais capazes</h2>
+          <p class="note" id="ranking-note"></p>
+        </div>
+        <div class="chart chart-rank" id="chart-ranking" role="img" aria-label="Ranking dos 15 modelos mais capazes"></div>
+      </section>
+      <section class="block" aria-labelledby="budget-title">
+        <div class="block-head">
+          <h2 id="budget-title">Melhor modelo para cada orçamento</h2>
+          <p class="note">Os modelos da fronteira, do mais barato ao mais caro. Nenhum modelo filtrado é melhor sem custar mais.</p>
+        </div>
+        <table class="budget" id="budget-table">
+          <thead><tr><th scope="col">Até</th><th scope="col">Modelo</th><th scope="col" class="num">Capacidade</th><th scope="col" class="num">Do líder</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+
+    <section class="block" aria-labelledby="batch-title">
+      <div class="block-head">
+        <h2 id="batch-title">Quanto o batch economiza</h2>
+        <p class="note">Preço blended dos 15 modelos mais capazes que têm os dois preços. Batch processa em até 24 h, de forma assíncrona.</p>
+      </div>
+      <div class="legend" id="batch-legend"></div>
+      <div class="chart chart-rank" id="chart-batch" role="img" aria-label="Comparação entre preço padrão e preço batch dos modelos mais capazes"></div>
+    </section>
+
+    <section class="block" aria-labelledby="timeline-title">
+      <div class="block-head">
+        <h2 id="timeline-title">Como a fronteira avançou</h2>
+        <p class="note">Cada ponto é um modelo na data de lançamento. A linha marca o melhor resultado disponível até cada data.</p>
+      </div>
+      <div class="legend" id="timeline-legend"></div>
+      <div class="chart chart-mid" id="chart-timeline" role="img" aria-label="Capacidade dos modelos por data de lançamento"></div>
+    </section>
+
+    <section class="block" aria-labelledby="table-title">
+      <div class="block-head">
+        <h2 id="table-title">Todos os modelos</h2>
+        <p class="note" id="table-note"></p>
+      </div>
+      <div class="table-tools">
+        <label class="check"><input type="checkbox" id="toggle-bench"> Mostrar benchmarks da Epoch</label>
+      </div>
+      <div class="table-wrap">
+        <table class="models" id="models-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <button type="button" class="ghost" id="show-all" hidden></button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <section aria-labelledby="sources-title">
+      <h2 id="sources-title">Fontes</h2>
+      <ul id="sources-list" class="sources"></ul>
+    </section>
+    <section aria-labelledby="method-title">
+      <h2 id="method-title">Como ler</h2>
+      <dl class="method">
+        <dt>Preço blended</dt>
+        <dd>Média de US$ por 1 milhão de tokens supondo 3 tokens de entrada para cada 1 de saída.</dd>
+        <dt>Batch</dt>
+        <dd><strong>Oficial</strong>: preço publicado pelo provedor. <strong>Estimado</strong>: preço padrão com o desconto documentado pelo provedor. <strong>Indisponível</strong>: o provedor não oferece batch ou não há dado.</dd>
+        <dt>Fronteira de Pareto</dt>
+        <dd>Modelos para os quais nenhum outro é ao mesmo tempo mais barato e mais capaz, considerando os filtros ativos.</dd>
+        <dt>Capacidade</dt>
+        <dd>Cada modelo aparece com a melhor variante de esforço de raciocínio reportada pela fonte.</dd>
+      </dl>
+      <p class="small">Atualizado toda segunda-feira pelo GitHub Actions. Código e dados: <a href="https://github.com/rodrigoakiray/bench-ai-model">github.com/rodrigoakiray/bench-ai-model</a>.</p>
+    </section>
+  </footer>
+
+  <div id="load-error" class="load-error" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"
+          integrity="sha384-pPi0zxBAoDu6+JXW/C68UZLvBUUtU+7zonhif43rqj7pxsGyqyqzcian2Rj37Rss"
+          crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+</body>
+</html>

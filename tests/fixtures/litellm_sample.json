@@ -1,0 +1,11 @@
+{
+  "sample_spec": {"mode": "one of: chat, embedding", "input_cost_per_token": 0.0},
+  "fake-chat-model": {
+    "litellm_provider": "openai", "mode": "chat",
+    "input_cost_per_token": 2e-06, "output_cost_per_token": 8e-06,
+    "input_cost_per_token_batches": 1e-06, "output_cost_per_token_batches": 4e-06,
+    "supported_endpoints": ["/v1/chat/completions", "/v1/batch"]
+  },
+  "fake-pro-model": {"litellm_provider": "openai", "mode": "responses", "input_cost_per_token": 3e-05, "output_cost_per_token": 0.00018},
+  "fake-embedding": {"litellm_provider": "openai", "mode": "embedding", "input_cost_per_token": 1e-07}
+}

@@ -1,0 +1,18 @@
+{
+  "tier": "free",
+  "pagination": {"page": 1, "page_size": 2, "total_pages": 1, "has_more": false},
+  "data": [
+    {
+      "id": "fake-id-1", "name": "Fake Model (High)", "slug": "fake-model-high", "release_date": "2026-01-01",
+      "model_creator": {"id": "fake-creator", "name": "FakeLab"},
+      "evaluations": {"artificial_analysis_intelligence_index": 42.0, "artificial_analysis_coding_index": 30.5},
+      "pricing": {"price_1m_input_tokens": 1.0, "price_1m_output_tokens": 4.0}
+    },
+    {
+      "id": "fake-id-2", "name": "Fake Model", "slug": "fake-model", "release_date": null,
+      "model_creator": {"id": "fake-creator", "name": "FakeLab"},
+      "evaluations": {"artificial_analysis_intelligence_index": null},
+      "pricing": {"price_1m_input_tokens": 0.0, "price_1m_output_tokens": 0.0}
+    }
+  ]
+}

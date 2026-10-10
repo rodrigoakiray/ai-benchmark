@@ -1,0 +1,30 @@
+# ---- segredos: NUNCA versionar ----
+.env
+.env.*
+!.env.example
+credentials.json
+token.json
+*.pem
+*.key
+*.p12
+secrets/
+
+# ---- dados locais e temporários ----
+# datalake/ e site/data/ SÃO versionados (dados públicos; o Actions commita o snapshot semanal)
+raw/*
+!raw/.gitkeep
+.tmp/*
+!.tmp/.gitkeep
+
+# ---- python ----
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# ---- vercel ----
+.vercel/
+
+# ---- claude code (pessoal) ----
+.claude/settings.local.json

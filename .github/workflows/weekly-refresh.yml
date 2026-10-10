@@ -1,0 +1,55 @@
+# Coleta semanal: roda o pipeline (bronze → silver → gold → site/data) e commita o snapshot em main.
+# O push do bot dispara o deploy de produção na Vercel (Git integration). Se o pipeline falhar, nada é commitado
+# e o site continua no snapshot anterior. SOP: workflows/weekly_refresh.md
+name: weekly-refresh
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # segunda-feira, 06:00 em Brasília
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Lint e testes
+        run: |
+          ruff check tools tests
+          pytest -q
+
+      - name: Pipeline
+        env:
+          ARTIFICIAL_ANALYSIS_API_KEY: ${{ secrets.ARTIFICIAL_ANALYSIS_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python tools/run_pipeline.py
+
+      - name: Commitar o snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add datalake/ site/data/
+          if git diff --cached --quiet; then
+            echo "Nenhum dado novo; nada a commitar."
+            exit 0
+          fi
+          python tools/check_secrets.py
+          git commit -m "chore(data): snapshot $(date -u +%F)"
+          git push

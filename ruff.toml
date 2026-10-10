@@ -1,0 +1,6 @@
+line-length = 120
+target-version = "py314"
+src = ["tools", "tests"]  # tools/ importam umas às outras como módulos de primeiro nível (import lake)
+
+[lint]
+select = ["E", "F", "I", "UP", "B"]

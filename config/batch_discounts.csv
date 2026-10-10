@@ -1,0 +1,10 @@
+provider,batch_factor,as_of,source_url,notes
+openai,0.5,2026-10-10,https://developers.openai.com/api/docs/pricing,Batch API: 50% em input e output
+anthropic,0.5,2026-10-10,https://platform.claude.com/docs/en/about-claude/pricing,Message Batches: 50% em input e output
+gemini,0.5,2026-10-10,https://ai.google.dev/gemini-api/docs/pricing,Batch Mode: 50%
+mistral,0.5,2026-10-10,https://docs.mistral.ai/capabilities/batch/,Batch API: 50%
+dashscope,0.5,2026-10-10,https://www.alibabacloud.com/help/en/model-studio/model-pricing,50% nos modelos com batch; não acumula com cache
+together_ai,0.5,2026-10-10,https://www.digitalapplied.com/blog/llm-batch-api-pricing-landscape-2026,50% (fonte de terceiros; conferir na doc da Together)
+groq,0.75,2026-10-10,https://groq.com/blog/batch-processing-with-groqcloud-for-ai-inference-workloads,25% de desconto
+xai,,2026-10-10,https://docs.x.ai/developers/pricing,Desconto só em alguns modelos; usar apenas o dado oficial do LiteLLM
+deepseek,,2026-10-10,https://api-docs.deepseek.com/quick_start/pricing,Sem Batch API (tem preço off-peak)

@@ -1,0 +1,123 @@
+{
+  "generated_at": "2026-10-10T15:35:14+00:00",
+  "snapshot_date": "2026-10-10",
+  "snapshots": [
+    "2026-10-10"
+  ],
+  "primary_metric": "aa_intelligence_index",
+  "counts": {
+    "models": 806,
+    "with_price": 376,
+    "batch": {
+      "unavailable": 197,
+      "estimated": 115,
+      "official": 64
+    }
+  },
+  "benchmarks": {
+    "aa_intelligence_index": "AA Intelligence Index",
+    "aa_coding_index": "AA Coding Index",
+    "aa_agentic_index": "AA Agentic Index",
+    "eci": "ECI",
+    "arena_elo": "Arena Elo (texto)",
+    "gpqa_diamond": "GPQA diamond",
+    "otis_aime": "OTIS Mock AIME 2024-2025",
+    "frontiermath_t1_3": "FrontierMath-Tiers-1-3-v2-Private",
+    "frontiermath_t4": "FrontierMath-Tier-4-v2-Private",
+    "simpleqa_verified": "SimpleQA Verified",
+    "arc_agi_2": "ARC-AGI-2",
+    "apex_agents": "APEX-Agents",
+    "weirdml": "WeirdML"
+  },
+  "sources": [
+    {
+      "name": "Artificial Analysis",
+      "url": "https://artificialanalysis.ai/",
+      "license": "API gratuita, atribuição obrigatória",
+      "provides": "Intelligence/Coding/Agentic Index e preços padrão"
+    },
+    {
+      "name": "Epoch AI",
+      "url": "https://epoch.ai/benchmarks",
+      "license": "CC-BY 4.0",
+      "provides": "Benchmarks, Epoch Capabilities Index (ECI), datas e acesso aos pesos"
+    },
+    {
+      "name": "LMArena",
+      "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset",
+      "license": "CC-BY 4.0",
+      "provides": "Arena Elo (texto, categoria geral)"
+    },
+    {
+      "name": "LiteLLM",
+      "url": "https://github.com/BerriAI/litellm",
+      "license": "MIT",
+      "provides": "Preços padrão e Batch API por provider"
+    }
+  ],
+  "batch_discounts": [
+    {
+      "provider": "openai",
+      "batch_factor": 0.5,
+      "as_of": "2026-10-10",
+      "source_url": "https://developers.openai.com/api/docs/pricing",
+      "notes": "Batch API: 50% em input e output"
+    },
+    {
+      "provider": "anthropic",
+      "batch_factor": 0.5,
+      "as_of": "2026-10-10",
+      "source_url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "notes": "Message Batches: 50% em input e output"
+    },
+    {
+      "provider": "gemini",
+      "batch_factor": 0.5,
+      "as_of": "2026-10-10",
+      "source_url": "https://ai.google.dev/gemini-api/docs/pricing",
+      "notes": "Batch Mode: 50%"
+    },
+    {
+      "provider": "mistral",
+      "batch_factor": 0.5,
+      "as_of": "2026-10-10",
+      "source_url": "https://docs.mistral.ai/capabilities/batch/",
+      "notes": "Batch API: 50%"
+    },
+    {
+      "provider": "dashscope",
+      "batch_factor": 0.5,
+      "as_of": "2026-10-10",
+      "source_url": "https://www.alibabacloud.com/help/en/model-studio/model-pricing",
+      "notes": "50% nos modelos com batch; não acumula com cache"
+    },
+    {
+      "provider": "together_ai",
+      "batch_factor": 0.5,
+      "as_of": "2026-10-10",
+      "source_url": "https://www.digitalapplied.com/blog/llm-batch-api-pricing-landscape-2026",
+      "notes": "50% (fonte de terceiros; conferir na doc da Together)"
+    },
+    {
+      "provider": "groq",
+      "batch_factor": 0.75,
+      "as_of": "2026-10-10",
+      "source_url": "https://groq.com/blog/batch-processing-with-groqcloud-for-ai-inference-workloads",
+      "notes": "25% de desconto"
+    },
+    {
+      "provider": "xai",
+      "batch_factor": null,
+      "as_of": "2026-10-10",
+      "source_url": "https://docs.x.ai/developers/pricing",
+      "notes": "Desconto só em alguns modelos; usar apenas o dado oficial do LiteLLM"
+    },
+    {
+      "provider": "deepseek",
+      "batch_factor": null,
+      "as_of": "2026-10-10",
+      "source_url": "https://api-docs.deepseek.com/quick_start/pricing",
+      "notes": "Sem Batch API (tem preço off-peak)"
+    }
+  ]
+}
