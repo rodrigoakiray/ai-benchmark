@@ -1,6 +1,7 @@
 """bronze → silver: normaliza nomes de modelo, tipa e grava 3 tabelas do snapshot `dt`.
 
-silver/llm/benchmark_scores  (longa) snapshot_date, model_id, variant, source, benchmark, score, unit, source_model_name
+silver/llm/benchmark_scores  (longa) snapshot_date, model_id, variant, source, benchmark, score, unit, baseline,
+                             source_model_name — unit: fraction (0-1), index ou elo; baseline: nota de acerto aleatório
 silver/llm/models            snapshot_date, model_id, display_name, organization, release_date, open_weights
 silver/llm/prices            snapshot_date, model_id, provider, source, source_model_key, preços USD/1M, batch_status
 Nomes não casados entre fontes vão para .tmp/unmatched_<fonte>.csv (para alimentar config/model_aliases.csv).
@@ -27,7 +28,14 @@ AA_INDICES = {
     "evaluations.artificial_analysis_intelligence_index": "AA Intelligence Index",
     "evaluations.artificial_analysis_coding_index": "AA Coding Index",
     "evaluations.artificial_analysis_agentic_index": "AA Agentic Index",
+    "evaluations.artificial_analysis_finance_and_accounting_index": "AA Finance & Accounting Index",
+    "evaluations.artificial_analysis_strategy_and_ops_index": "AA Strategy & Ops Index",
+    "evaluations.artificial_analysis_legal_index": "AA Legal Index",
+    "evaluations.artificial_analysis_healthcare_and_medical_index": "AA Healthcare & Medical Index",
+    "evaluations.artificial_analysis_engineering_index": "AA Engineering Index",
+    "evaluations.artificial_analysis_economics_index": "AA Economics Index",
 }
+LMARENA_ARENAS = ["text", "webdev", "search", "vision"]  # bronze/llm/lmarena_<arena>
 PER_1M = 1_000_000
 # grafias diferentes da mesma organização entre as fontes (chave em minúsculas)
 ORGS = {
@@ -119,6 +127,7 @@ def epoch_scores(dt: str, resolve: Resolver) -> pd.DataFrame:
             "benchmark": m.benchmark,
             "score": num(rows[m.score_column]) * float(m.scale),
             "unit": "fraction",
+            "baseline": float(m.random_baseline) if pd.notna(m.random_baseline) else 0.0,
         }))
     # o ECI usa o nome do grupo ("Qwen 3.8 Max"); converte para a versão ("qwen3.8-max_max") como nos CSVs
     group_to_version = em.dropna(subset=["model_group"]).drop_duplicates("model_group")
@@ -132,10 +141,16 @@ def epoch_scores(dt: str, resolve: Resolver) -> pd.DataFrame:
 
 
 def lmarena_scores(dt: str, resolve: Resolver) -> pd.DataFrame:
-    lm = lake.read("bronze", "lmarena_text", dt)
-    lm = lm[lm["category"] == "overall"]
-    df = pd.DataFrame({"source_model_name": lm["model_name"], "benchmark": "Arena Elo (texto)",
-                       "score": num(lm["rating"]), "unit": "elo"})
+    """Elo de todas as categorias de cada arena: benchmark "Arena <arena>: <categoria>" (ex.: "Arena text: coding")."""
+    parts = []
+    for arena in LMARENA_ARENAS:
+        lm = optional(dt, f"lmarena_{arena}")
+        if lm is None:
+            continue
+        parts.append(pd.DataFrame({"source_model_name": lm["model_name"],
+                                   "benchmark": "Arena " + arena + ": " + lm["category"],
+                                   "score": num(lm["rating"]), "unit": "elo"}))
+    df = pd.concat(parts, ignore_index=True)
     df[["model_id", "variant"]] = [resolve("lmarena", n) for n in df["source_model_name"]]
     return df.assign(source="lmarena")
 
@@ -273,7 +288,9 @@ def run(dt: str, dry_run: bool) -> None:
     s = s.assign(snapshot_date=snapshot).astype({c: "str" for c in
                                                   ["model_id", "variant", "source", "benchmark", "unit",
                                                    "source_model_name"]})
-    s = s[["snapshot_date", "model_id", "variant", "source", "benchmark", "score", "unit", "source_model_name"]]
+    s["baseline"] = s["baseline"].astype("float64")  # só a Epoch publica o acerto aleatório
+    s = s[["snapshot_date", "model_id", "variant", "source", "benchmark", "score", "unit", "baseline",
+           "source_model_name"]]
     lake.write(s.drop_duplicates().reset_index(drop=True), "silver", "benchmark_scores", dt, dry_run)
 
     lake.write(model_dim(dt, aa, resolve).assign(snapshot_date=snapshot), "silver", "models", dt, dry_run)

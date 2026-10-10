@@ -1,7 +1,7 @@
 """gold → site/data: exporta o model_scorecard em JSON para o dashboard (site/index.html).
 
 site/data/scorecard.json  {"models": [...snapshot mais recente...], "history": [...série semanal resumida...]}
-site/data/meta.json       data do snapshot, contagens, rótulos das colunas, fontes e atribuições
+site/data/meta.json       data do snapshot, contagens, benchmarks, aplicações, fontes e atribuições
 Uso: python tools/export_site.py [--dry-run]
 """
 import argparse
@@ -11,17 +11,17 @@ from datetime import UTC, datetime
 import pandas as pd
 
 import lake
-from build_scorecard import BENCH_COLS
+from build_scorecard import APPLICATIONS, BENCHMARKS
 
 OUT = lake.ROOT / "site" / "data"
 SOURCES = [
     {"name": "Artificial Analysis", "url": "https://artificialanalysis.ai/",
      "license": "API gratuita, atribuição obrigatória",
-     "provides": "Intelligence/Coding/Agentic Index e preços padrão"},
+     "provides": "Índices geral, de programação, de agentes e por área profissional; preços padrão"},
     {"name": "Epoch AI", "url": "https://epoch.ai/benchmarks", "license": "CC-BY 4.0",
      "provides": "Benchmarks, Epoch Capabilities Index (ECI), datas e acesso aos pesos"},
     {"name": "LMArena", "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset", "license": "CC-BY 4.0",
-     "provides": "Arena Elo (texto, categoria geral)"},
+     "provides": "Elo por categoria (texto) e das arenas de código web, busca e visão"},
     {"name": "LiteLLM", "url": "https://github.com/BerriAI/litellm", "license": "MIT",
      "provides": "Preços padrão e Batch API por provider"},
 ]
@@ -33,6 +33,8 @@ def records(df: pd.DataFrame) -> list[dict]:
     for c in df.columns:
         if pd.api.types.is_datetime64_any_dtype(df[c]):
             df[c] = df[c].dt.strftime("%Y-%m-%d")
+        elif pd.api.types.is_float_dtype(df[c]):
+            df[c] = df[c].round(4)  # o JSON fica bem menor; o gold mantém a precisão total
     return json.loads(df.to_json(orient="records"))
 
 
@@ -50,7 +52,9 @@ def run(dry_run: bool) -> None:
         "primary_metric": latest["primary_metric"].iloc[0],
         "counts": {"models": len(latest), "with_price": int(latest["blended_usd_1m"].notna().sum()),
                    "batch": latest["batch_status"].value_counts().to_dict()},
-        "benchmarks": {col: label for label, col in BENCH_COLS.items()},
+        "benchmarks": {col: {k: b[k] for k in ("label", "description", "source")} | {
+            "models": int(latest[col].notna().sum())} for col, b in BENCHMARKS.items()},
+        "applications": [{**app, "models": int(latest[f"app_{app['id']}"].notna().sum())} for app in APPLICATIONS],
         "sources": SOURCES,
         "batch_discounts": records(discounts),
     }

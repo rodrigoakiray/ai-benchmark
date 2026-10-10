@@ -11,7 +11,8 @@ import sys
 import lake
 
 INGEST = ["ingest_epoch.py", "ingest_lmarena.py", "ingest_litellm.py", "ingest_artificial_analysis.py"]
-BRONZE = ["epoch_benchmarks", "epoch_eci", "epoch_models", "epoch_benchmark_meta", "lmarena_text", "litellm_prices"]
+BRONZE = ["epoch_benchmarks", "epoch_eci", "epoch_models", "epoch_benchmark_meta", "lmarena_text", "lmarena_webdev",
+          "lmarena_search", "lmarena_vision", "litellm_prices"]
 SILVER = ["benchmark_scores", "models", "prices"]
 
 

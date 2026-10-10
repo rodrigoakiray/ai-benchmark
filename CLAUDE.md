@@ -57,6 +57,10 @@ Convenções:
   Só dados **públicos** entram aqui. Qualquer dado sensível ou pessoal vai para `raw/`/`.tmp/` e nunca é publicado.
 - Nomes de modelo: normalização em `tools/model_ids.py`; correções manuais em `config/model_aliases.csv`.
   Descontos de batch sem dado oficial: `config/batch_discounts.csv` (com `as_of` e `source_url`).
+- Índices por aplicação (programação, agentes, pesquisa, raciocínio, matemática, escrita, negócios, jurídico,
+  saúde, ciência, visão): `config/applications.json` liga cada coluna do gold a um benchmark do silver e diz
+  quais compõem cada aplicação. Mudar o mapeamento é editar esse arquivo e rodar `build_scorecard.py` +
+  `export_site.py`; não codifique benchmarks nas tools.
 - **Atribuição obrigatória** no dashboard: Artificial Analysis, Epoch AI (CC-BY 4.0), LMArena (CC-BY 4.0), LiteLLM.
 
 ## 3. Como operar
@@ -175,7 +179,7 @@ Cada falha é chance de fortalecer o sistema:
 workflows/         # SOPs: o quê e como
 tools/             # scripts Python: execução determinística (inclui check_secrets.py)
 tests/             # pytest; fixtures falsas em tests/fixtures/
-config/            # tabelas manuais versionadas: aliases de modelo, descontos de batch
+config/            # tabelas manuais versionadas: aliases de modelo, descontos de batch, aplicações × benchmarks
 raw/               # fontes originais, imutáveis (ignorado)
 datalake/          # bronze/ silver/ gold/ em Parquet (versionado; só dados públicos)
 site/              # dashboard estático publicado pela Vercel; site/data/ é gerado pelo pipeline

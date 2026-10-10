@@ -1,0 +1,95 @@
+{
+  "_doc": "Benchmarks agrupados por aplicação. 'benchmarks' liga cada coluna do gold a um benchmark do silver (source + benchmark). 'applications' lista as colunas que compõem cada índice de aplicação (média simples das notas normalizadas, 0 a 100). O índice exige 2 benchmarks e pelo menos 'min_objective' testes objetivos (fora do LMArena, que mede preferência); o padrão é 1.",
+  "benchmarks": {
+    "aa_intelligence_index": {"source": "artificial_analysis", "benchmark": "AA Intelligence Index", "label": "AA Intelligence Index", "description": "Índice geral da Artificial Analysis: agentes, código, conhecimento e raciocínio científico."},
+    "eci": {"source": "epoch", "benchmark": "ECI", "label": "Epoch Capabilities Index", "description": "Índice da Epoch AI que combina dezenas de benchmarks numa escala única."},
+    "arena_elo": {"source": "lmarena", "benchmark": "Arena text: overall", "label": "Arena Elo (texto)", "description": "Preferência de pessoas em conversas às cegas no LMArena, todas as categorias."},
+
+    "aa_coding_index": {"source": "artificial_analysis", "benchmark": "AA Coding Index", "label": "AA Coding Index", "description": "Índice de programação da Artificial Analysis (Terminal-Bench e SciCode)."},
+    "arena_coding": {"source": "lmarena", "benchmark": "Arena text: coding", "label": "Arena: programação", "description": "Preferência de pessoas em perguntas de programação no LMArena."},
+    "arena_webdev": {"source": "lmarena", "benchmark": "Arena webdev: overall", "label": "Code Arena (web)", "description": "Criar aplicações web completas a partir de um pedido, votado por pessoas."},
+    "swe_bench_verified": {"source": "epoch", "benchmark": "SWE-Bench verified", "label": "SWE-bench Verified", "description": "Corrigir issues reais de repositórios Python, verificado por testes."},
+    "terminal_bench": {"source": "epoch", "benchmark": "Terminal Bench", "label": "Terminal-Bench", "description": "Completar tarefas de engenharia num terminal Linux."},
+    "frontiercode": {"source": "epoch", "benchmark": "FrontierCode", "label": "FrontierCode", "description": "Correções aceitáveis para merge em issues difíceis de projetos open source."},
+    "deepswe": {"source": "epoch", "benchmark": "DeepSWE", "label": "DeepSWE", "description": "Tarefas longas e originais de engenharia de software em 91 repositórios."},
+    "frontierswe": {"source": "epoch", "benchmark": "FrontierSWE", "label": "FrontierSWE", "description": "Tarefas de engenharia muito longas, com até 20 horas por tarefa."},
+    "gso_bench": {"source": "epoch", "benchmark": "GSO-Bench", "label": "GSO", "description": "Otimizar o desempenho de código existente."},
+    "mirrorcode": {"source": "epoch", "benchmark": "MirrorCode", "label": "MirrorCode", "description": "Reimplementar programas inteiros sem acesso ao código-fonte."},
+
+    "aa_agentic_index": {"source": "artificial_analysis", "benchmark": "AA Agentic Index", "label": "AA Agentic Index", "description": "Índice de agentes da Artificial Analysis (trabalho do conhecimento e uso de ferramentas)."},
+    "apex_agents": {"source": "epoch", "benchmark": "APEX-Agents", "label": "APEX-Agents", "description": "Tarefas longas de banco de investimento, consultoria e direito em ambientes de trabalho simulados."},
+    "remote_labor_index": {"source": "epoch", "benchmark": "Remote Labor Index", "label": "Remote Labor Index", "description": "Projetos reais de freelancers concluídos em nível aceitável por um cliente."},
+    "metr_time_horizons": {"source": "epoch", "benchmark": "METR Time Horizons", "label": "METR Time Horizons", "description": "Duração das tarefas de software que o modelo completa sozinho com 50% de sucesso."},
+    "osworld_2": {"source": "epoch", "benchmark": "OSWorld 2.0", "label": "OSWorld 2.0", "description": "Usar um computador (apps, navegador, arquivos) para cumprir tarefas."},
+
+    "arena_search": {"source": "lmarena", "benchmark": "Arena search: overall", "label": "Search Arena", "description": "Respostas com busca na internet, votadas por pessoas no LMArena."},
+    "deepresearch_bench": {"source": "epoch", "benchmark": "DeepResearch Bench", "label": "DeepResearch Bench", "description": "Pesquisar na web e sintetizar a informação encontrada."},
+    "simpleqa_verified": {"source": "epoch", "benchmark": "SimpleQA Verified", "label": "SimpleQA Verified", "description": "Responder perguntas factuais curtas sem inventar (sem busca)."},
+
+    "gpqa_diamond": {"source": "epoch", "benchmark": "GPQA diamond", "label": "GPQA Diamond", "description": "Questões de pós-graduação em biologia, física e química."},
+    "hle": {"source": "epoch", "benchmark": "HLE", "label": "Humanity's Last Exam", "description": "Questões de fronteira escritas por especialistas de dezenas de áreas."},
+    "arc_agi_2": {"source": "epoch", "benchmark": "ARC-AGI-2", "label": "ARC-AGI-2", "description": "Quebra-cabeças visuais que exigem abstrair regras novas."},
+    "simplebench": {"source": "epoch", "benchmark": "SimpleBench", "label": "SimpleBench", "description": "Bom senso e perguntas com pegadinha."},
+    "lmca": {"source": "epoch", "benchmark": "LMCA", "label": "LMCA", "description": "Julgar a qualidade de argumentos conceituais, comparado a notas de especialistas."},
+    "cl_bench": {"source": "epoch", "benchmark": "CL-bench", "label": "CL-bench", "description": "Aprender conhecimento novo dado no próprio contexto e raciocinar com ele."},
+    "arena_hard_prompts": {"source": "lmarena", "benchmark": "Arena text: hard_prompts", "label": "Arena: pedidos difíceis", "description": "Preferência de pessoas em pedidos complexos e específicos."},
+    "arena_expert": {"source": "lmarena", "benchmark": "Arena text: expert", "label": "Arena: especialistas", "description": "Preferência em perguntas de nível especialista."},
+
+    "frontiermath_t1_3": {"source": "epoch", "benchmark": "FrontierMath-Tiers-1-3-v2-Private", "label": "FrontierMath (níveis 1-3)", "description": "Problemas de matemática de pesquisa, inéditos."},
+    "frontiermath_t4": {"source": "epoch", "benchmark": "FrontierMath-Tier-4-v2-Private", "label": "FrontierMath (nível 4)", "description": "Os problemas mais difíceis do FrontierMath."},
+    "otis_aime": {"source": "epoch", "benchmark": "OTIS Mock AIME 2024-2025", "label": "AIME (OTIS)", "description": "Problemas no estilo da olimpíada americana AIME."},
+    "proofbench": {"source": "epoch", "benchmark": "ProofBench", "label": "ProofBench", "description": "Provas de matemática de pós-graduação verificadas em Lean 4."},
+    "arena_math": {"source": "lmarena", "benchmark": "Arena text: math", "label": "Arena: matemática", "description": "Preferência de pessoas em perguntas de matemática."},
+
+    "arena_instruction_following": {"source": "lmarena", "benchmark": "Arena text: instruction_following", "label": "Arena: seguir instruções", "description": "Respeitar formato, restrições e estrutura pedidos, votado por pessoas."},
+    "arena_creative_writing": {"source": "lmarena", "benchmark": "Arena text: creative_writing", "label": "Arena: escrita criativa", "description": "Preferência de pessoas em pedidos de escrita criativa."},
+    "arena_writing_industry": {"source": "lmarena", "benchmark": "Arena text: industry_writing_and_literature_and_language", "label": "Arena: redação e linguagem", "description": "Preferência em tarefas profissionais de redação, literatura e idiomas."},
+    "lech_mazur_writing": {"source": "epoch", "benchmark": "Lech Mazur Writing", "label": "Lech Mazur Writing", "description": "Contos que precisam incorporar 10 elementos obrigatórios."},
+    "fiction_livebench": {"source": "epoch", "benchmark": "Fiction.LiveBench", "label": "Fiction.LiveBench", "description": "Compreender textos longos de ficção (16 mil tokens)."},
+
+    "aa_finance_index": {"source": "artificial_analysis", "benchmark": "AA Finance & Accounting Index", "label": "AA Finanças e Contabilidade", "description": "Conhecimento de negócios, trabalho do conhecimento com agentes e raciocínio, aplicados a finanças."},
+    "aa_strategy_index": {"source": "artificial_analysis", "benchmark": "AA Strategy & Ops Index", "label": "AA Estratégia e Operações", "description": "Trabalho do conhecimento, conhecimento de negócios e uso de ferramentas."},
+    "aa_economics_index": {"source": "artificial_analysis", "benchmark": "AA Economics Index", "label": "AA Economia", "description": "Conhecimento de economia e raciocínio."},
+    "gdpval": {"source": "epoch", "benchmark": "GDPval", "label": "GDPval", "description": "1.320 tarefas de 44 profissões, comparadas por especialistas ao trabalho humano."},
+    "arena_business": {"source": "lmarena", "benchmark": "Arena text: industry_business_and_management_and_financial_operations", "label": "Arena: negócios e finanças", "description": "Preferência em perguntas de gestão, negócios e finanças."},
+
+    "aa_legal_index": {"source": "artificial_analysis", "benchmark": "AA Legal Index", "label": "AA Jurídico", "description": "Conhecimento jurídico, trabalho do conhecimento, raciocínio e não alucinação."},
+    "arena_legal": {"source": "lmarena", "benchmark": "Arena text: industry_legal_and_government", "label": "Arena: jurídico e governo", "description": "Preferência em perguntas jurídicas e de governo."},
+
+    "aa_health_index": {"source": "artificial_analysis", "benchmark": "AA Healthcare & Medical Index", "label": "AA Saúde e Medicina", "description": "Conhecimento médico, contexto longo clínico e não alucinação."},
+    "arena_medicine": {"source": "lmarena", "benchmark": "Arena text: industry_medicine_and_healthcare", "label": "Arena: medicina e saúde", "description": "Preferência em perguntas de medicina e saúde."},
+
+    "aa_engineering_index": {"source": "artificial_analysis", "benchmark": "AA Engineering Index", "label": "AA Engenharia", "description": "Conhecimento de engenharia, raciocínio científico e Terminal-Bench."},
+    "arena_science": {"source": "lmarena", "benchmark": "Arena text: industry_life_and_physical_and_social_science", "label": "Arena: ciências", "description": "Preferência em perguntas de ciências da vida, físicas e sociais."},
+    "surface_evolver": {"source": "epoch", "benchmark": "Surface Evolver Bench", "label": "Surface Evolver Bench", "description": "Escrever simulações físicas no Surface Evolver, como um agente."},
+
+    "arena_vision": {"source": "lmarena", "benchmark": "Arena vision: overall", "label": "Vision Arena", "description": "Perguntas sobre imagens, votadas por pessoas no LMArena."},
+    "vpct": {"source": "epoch", "benchmark": "VPCT", "label": "VPCT", "description": "Prever onde bolas caem em diagramas de rampas (física visual)."},
+    "geobench": {"source": "epoch", "benchmark": "GeoBench", "label": "GeoBench", "description": "Descobrir o país de uma foto, como no GeoGuessr."},
+    "furniture_assembly": {"source": "epoch", "benchmark": "Furniture Assembly", "label": "Furniture Assembly", "description": "Achar o passo errado em fotos de montagem de móveis."}
+  },
+  "applications": [
+    {"id": "coding", "label": "Programação", "description": "Escrever, corrigir e otimizar código; criar aplicações.",
+     "benchmarks": ["aa_coding_index", "arena_coding", "arena_webdev", "swe_bench_verified", "terminal_bench", "frontiercode", "deepswe", "frontierswe", "gso_bench", "mirrorcode"]},
+    {"id": "agents", "label": "Agentes e automação", "description": "Executar tarefas longas sozinho, usando ferramentas, terminal e computador.",
+     "benchmarks": ["aa_agentic_index", "apex_agents", "remote_labor_index", "metr_time_horizons", "terminal_bench", "osworld_2"]},
+    {"id": "research", "label": "Pesquisa e fatos", "description": "Pesquisar na internet, sintetizar o que encontrou e não inventar fatos.",
+     "benchmarks": ["arena_search", "deepresearch_bench", "simpleqa_verified"]},
+    {"id": "reasoning", "label": "Raciocínio e análise", "description": "Resolver problemas difíceis, analisar argumentos e aprender com o contexto dado.",
+     "benchmarks": ["gpqa_diamond", "hle", "arc_agi_2", "simplebench", "lmca", "cl_bench", "arena_hard_prompts", "arena_expert"]},
+    {"id": "math", "label": "Matemática", "description": "Resolver e provar problemas de matemática, de olimpíada a pesquisa.",
+     "benchmarks": ["frontiermath_t1_3", "frontiermath_t4", "otis_aime", "proofbench", "arena_math"]},
+    {"id": "writing", "label": "Escrita e estruturação", "description": "Seguir instruções de formato e estrutura, redigir bem e compreender textos longos.", "min_objective": 0,
+     "benchmarks": ["arena_instruction_following", "arena_creative_writing", "arena_writing_industry", "lech_mazur_writing", "fiction_livebench"]},
+    {"id": "business", "label": "Negócios e finanças", "description": "Finanças, contabilidade, estratégia, economia e trabalho de escritório.",
+     "benchmarks": ["aa_finance_index", "aa_strategy_index", "aa_economics_index", "gdpval", "arena_business"]},
+    {"id": "legal", "label": "Jurídico", "description": "Perguntas e tarefas de direito e governo.",
+     "benchmarks": ["aa_legal_index", "arena_legal"]},
+    {"id": "health", "label": "Saúde", "description": "Perguntas e tarefas de medicina e saúde.",
+     "benchmarks": ["aa_health_index", "arena_medicine"]},
+    {"id": "science", "label": "Ciência e engenharia", "description": "Engenharia e ciências naturais e sociais.",
+     "benchmarks": ["aa_engineering_index", "arena_science", "surface_evolver"]},
+    {"id": "vision", "label": "Visão", "description": "Entender imagens, fotos e diagramas.",
+     "benchmarks": ["arena_vision", "vpct", "geobench", "furniture_assembly"]}
+  ]
+}

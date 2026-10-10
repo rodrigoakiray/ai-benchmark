@@ -2,7 +2,7 @@
 
 Coleta semanal de benchmarks e preços (padrão e batch) de LLMs, com pipeline Parquet bronze→silver→gold e dashboard na Vercel.
 
-- **Dashboard:** site estático em `site/`, publicado pela Vercel a cada push em `main`.
+- **Dashboard:** site estático em `site/`, publicado pela Vercel a cada push em `main`. Mostra o melhor modelo e o melhor custo-benefício por aplicação (programação, agentes, pesquisa, raciocínio, matemática, escrita, negócios, jurídico, saúde, ciência e visão), com o mapeamento em [`config/applications.json`](config/applications.json).
 - **Atualização:** o GitHub Actions (`.github/workflows/weekly-refresh.yml`) roda toda segunda-feira, commita o snapshot e a Vercel republica.
 - **Fontes:** Artificial Analysis, Epoch AI (CC-BY 4.0), LMArena (CC-BY 4.0) e LiteLLM (MIT). Detalhes em [`workflows/weekly_refresh.md`](workflows/weekly_refresh.md).
 - **Instruções para o agente:** [`CLAUDE.md`](CLAUDE.md).
