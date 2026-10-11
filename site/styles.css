@@ -19,6 +19,7 @@
   --seq-hi: #184f95;
   --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
   --row: 34px;              /* altura fixa das linhas: as tabelas calculam quantas cabem na tela */
+  --heat-row: 30px;         /* idem, no mapa de calor (sem contar os 2px de border-spacing) */
 }
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
@@ -245,7 +246,7 @@ thead th { padding-top: 8px; padding-bottom: 8px; vertical-align: bottom; }
   font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; width: 100%; white-space: normal;
 }
 .heat thead th[aria-sort] button { color: var(--ink); font-weight: 700; }
-.heat tbody tr { height: 30px; }
+.heat tbody tr { height: var(--heat-row); }
 .heat tbody th { font-weight: 400; background: var(--surface); }
 .heat td { border-radius: 4px; font-weight: 600; text-align: center; font-variant-numeric: tabular-nums; }
 .heat td.empty { color: var(--muted); font-weight: 400; background: transparent; }
@@ -331,4 +332,31 @@ thead th { padding-top: 8px; padding-bottom: 8px; vertical-align: bottom; }
   .apps tbody th, .apps tbody td { padding-top: 4px; padding-bottom: 4px; }
   .sidebar { gap: 14px; }
   .nav a { padding: 6px 12px; }
+}
+
+/* monitor (1440 × 1080 em janela normal, ~1440 × 930 úteis): texto ~6% maior e as telas de pouco conteúdo ocupam a altura */
+@media (min-width: 1280px) and (min-height: 860px) {
+  html { font-size: 17px; }
+  :root { --row: 36px; --heat-row: 32px; }
+  .brand { font-size: 0.99rem; } /* o mesmo tamanho de antes: o nome continua numa linha */
+  /* melhor por aplicação: as linhas dividem a altura; descrição em até 2 linhas, nota e preço abaixo do modelo */
+  .apps { height: 100%; }
+  .apps .line2 { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .apps td .model-org { display: block; margin-left: 0; overflow: hidden; text-overflow: ellipsis; }
+  /* como é medido: lista e detalhe com mais respiro, benchmarks numa coluna */
+  .app-list button { padding: 10px 14px; }
+  .app-detail { padding: 16px 22px; }
+  .app-detail h3 { font-size: 1.25rem; }
+  .app-detail > p { margin: 4px 0 12px; font-size: 0.95rem; }
+  .bench-rows { grid-template-columns: 1fr; }
+  .bench-rows li { padding: 9px 0; font-size: 0.92rem; }
+  .bench-rows .meta { font-size: 0.8rem; }
+  /* fontes e leitura */
+  .about { gap: 16px 64px; }
+  .about h2 { margin-bottom: 14px; }
+  .sources { gap: 14px; }
+  .sources li { font-size: 1rem; }
+  .sources .what { font-size: 0.9rem; }
+  .method { font-size: 0.95rem; }
+  .method dt { margin-top: 12px; }
 }

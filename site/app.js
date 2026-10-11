@@ -17,9 +17,9 @@ const BATCH_STATUS = {
 };
 const VIEWS = ["geral", "aplicacoes", "aplicabilidade", "ranking", "batch", "evolucao", "modelos", "metodo", "fontes"];
 const MAX_HIGHLIGHT = 3;
-const HEAT_ROW = 32;   // 30px de linha + 2px de espaço (border-spacing)
 const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const FIXED_LAYOUT = window.matchMedia("(min-width: 960px) and (min-height: 560px)");
+const MONITOR = window.matchMedia("(min-width: 1280px) and (min-height: 860px)"); // mesma faixa do styles.css
 
 const state = {
   view: "geral", mode: "standard", metric: "aa_intelligence_index", weights: "all", since: "all", query: "",
@@ -150,6 +150,7 @@ function renderPager(id, page, size, total, onPage) {
   box.replaceChildren(prev, info, next);
 }
 const rowHeight = () => parseFloat(css("--row")) || 34;
+const heatRow = () => (parseFloat(css("--heat-row")) || 30) + 2; // + 2px de espaço (border-spacing)
 
 /* ---------- visão geral: a frase da semana (snapshot inteiro, preço padrão, métrica principal) ---------- */
 function renderHero() {
@@ -180,6 +181,7 @@ function renderHero() {
 }
 
 /* ---------- elementos comuns dos gráficos ---------- */
+const chartFont = () => (MONITOR.matches ? 13 : 12); // px dos rótulos e eixos; os tooltips seguem o CSS
 function baseOption() {
   return {
     animation: !REDUCED_MOTION,
@@ -195,15 +197,15 @@ function axisStyle(extra = {}) {
   return {
     axisLine: { lineStyle: { color: css("--axis") } },
     axisTick: { show: false },
-    axisLabel: { color: css("--muted"), fontSize: 12 },
+    axisLabel: { color: css("--muted"), fontSize: chartFont() },
     splitLine: { lineStyle: { color: css("--hairline"), type: "solid", width: 1 } },
-    nameTextStyle: { color: css("--ink-2"), fontSize: 12 },
+    nameTextStyle: { color: css("--ink-2"), fontSize: chartFont() },
     ...extra,
   };
 }
 function yMetricAxis() {
   return axisStyle({ type: "value", scale: true, name: METRICS[state.metric].label, nameLocation: "end", nameGap: 12,
-    nameTextStyle: { color: css("--ink-2"), fontSize: 12, align: "left" } });
+    nameTextStyle: { color: css("--ink-2"), fontSize: chartFont(), align: "left" } });
 }
 function tooltipModel(m) {
   const rows = [
@@ -288,7 +290,7 @@ function renderFrontier(models) {
     lineStyle: { color: css("--frontier"), width: 2 }, symbol: "circle", symbolSize: 10,
     itemStyle: { color: (p) => (highlightOf(p.data.m) ? markColor(p.data.m) : css("--frontier")), borderColor: surface, borderWidth: 2 },
     label: {
-      show: true, position: "left", distance: 8, color: css("--ink"), fontSize: 12, fontWeight: 600,
+      show: true, position: "left", distance: 8, color: css("--ink"), fontSize: chartFont(), fontWeight: 600,
       // no celular só o líder ganha rótulo; os demais estão no tooltip e na tela de orçamento
       formatter: (p) => (!isNarrow() || p.dataIndex === front.length - 1 ? p.data.m.display_name : ""),
     },
@@ -306,7 +308,7 @@ function renderFrontier(models) {
     grid: { left: 56, right: 36, top: 36, bottom: 56 },
     xAxis: axisStyle({
       type: "log", logBase: 10, name: `Preço ${priceWord} blended (US$ por 1M tokens, escala log)`, nameLocation: "middle", nameGap: 32,
-      axisLabel: { color: css("--muted"), fontSize: 12, formatter: fmtTick, hideOverlap: true },
+      axisLabel: { color: css("--muted"), fontSize: chartFont(), formatter: fmtTick, hideOverlap: true },
     }),
     yAxis: yMetricAxis(),
     series,
@@ -391,9 +393,9 @@ function renderHeat(models) {
   // tudo que ocupa altura vem antes da medição; a paginação definitiva tem a mesma altura da provisória
   renderPager("heat-pager", 0, 1, rows.length, () => {});
   const wrap = document.getElementById("heat-wrap");
-  let size = rowsThatFit(wrap, HEAT_ROW, 25);
+  let size = rowsThatFit(wrap, heatRow(), 25);
   drawHeatRows(rows, keys, size);
-  if (FIXED_LAYOUT.matches && overflows(wrap)) { size = rowsThatFit(wrap, measuredRow(wrap, HEAT_ROW), 25); drawHeatRows(rows, keys, size); }
+  if (FIXED_LAYOUT.matches && overflows(wrap)) { size = rowsThatFit(wrap, measuredRow(wrap, heatRow()), 25); drawHeatRows(rows, keys, size); }
   renderPager("heat-pager", state.heatPage, size, rows.length, (p) => { state.heatPage = p; renderView(); });
 }
 function drawHeatRows(rows, keys, size) {
@@ -437,17 +439,19 @@ function renderRanking(models) {
     // barras sempre a partir do zero: o comprimento é o valor
     xAxis: axisStyle({ type: "value", min: 0, axisLabel: { show: false }, splitLine: { show: false } }),
     yAxis: { type: "category", data: top.map((m) => m.display_name), axisTick: { show: false },
-      axisLine: { lineStyle: { color: css("--axis") } }, axisLabel: { color: css("--ink"), fontSize: 12 } },
+      axisLine: { lineStyle: { color: css("--axis") } }, axisLabel: { color: css("--ink"), fontSize: chartFont() } },
     tooltip: { ...baseOption().tooltip, trigger: "item", formatter: (p) => tooltipModel(top[p.dataIndex]) },
     series: [{
-      type: "bar", barMaxWidth: 18, barCategoryGap: "35%",
+      type: "bar", barMaxWidth: MONITOR.matches ? 26 : 18, barCategoryGap: "35%",
       data: top.map((m) => ({ value: scoreOf(m), itemStyle: { color: highlightOf(m) ? markColor(m) : css("--ink-2"), borderRadius: [0, 4, 4, 0] } })),
-      label: { show: true, position: "right", color: css("--ink-2"), fontSize: 12, formatter: (p) => fmtScore(p.value) },
+      label: { show: true, position: "right", color: css("--ink-2"), fontSize: chartFont(), formatter: (p) => fmtScore(p.value) },
     }],
   }, true);
 }
 function renderBudget(models) {
   const front = paretoFront(models);
+  const table = document.getElementById("budget-table");
+  table.style.removeProperty("--row"); // mede com a altura padrão; o esticamento do desenho anterior não conta
   const body = document.querySelector("#budget-table tbody");
   const note = document.getElementById("budget-note");
   note.textContent = "Os modelos da fronteira, do mais barato ao mais caro: nenhum outro é melhor sem custar mais.";
@@ -478,6 +482,11 @@ function renderBudget(models) {
   let shown = draw(size);
   if (FIXED_LAYOUT.matches && overflows(wrap)) shown = draw(rowsThatFit(wrap, measuredRow(wrap, rowHeight()), front.length));
   setNote(shown);
+  // monitor: sobrando altura, as linhas crescem até 1,6× para ocupar o painel
+  if (MONITOR.matches) {
+    const fit = (wrap.clientHeight - table.tHead.offsetHeight - 8) / shown;
+    if (fit > rowHeight()) table.style.setProperty("--row", `${Math.floor(Math.min(fit, rowHeight() * 1.6))}px`);
+  }
 }
 
 /* ---------- tela 5: padrão × batch ---------- */
@@ -486,6 +495,7 @@ function renderBatch(models) {
     .filter((m) => scoreOf(m) != null && m.blended_usd_1m > 0 && m.blended_batch_usd_1m > 0)
     .sort((a, b) => scoreOf(b) - scoreOf(a)).slice(0, 15).reverse();
   const ink = css("--frontier"), surface = css("--surface");
+  const dot = MONITOR.matches ? 12 : 10;
   setLegend("batch-legend", [
     { kind: "dot", color: css("--mark"), label: "Preço padrão" },
     { kind: "dot", color: ink, label: "Batch oficial" },
@@ -507,9 +517,9 @@ function renderBatch(models) {
     },
     xAxis: axisStyle({ type: "log", logBase: 10, name: "Preço blended (US$ por 1M tokens, escala log)", nameLocation: "middle", nameGap: 28,
       min: (v) => v.min / 1.5, max: (v) => v.max * 1.5, // folga para o ponto não encostar na borda
-      axisLabel: { color: css("--muted"), fontSize: 12, formatter: fmtTick, showMinLabel: false, showMaxLabel: false } }),
+      axisLabel: { color: css("--muted"), fontSize: chartFont(), formatter: fmtTick, showMinLabel: false, showMaxLabel: false } }),
     yAxis: { type: "category", data: rows.map((m) => m.display_name), axisTick: { show: false },
-      axisLine: { show: false }, axisLabel: { color: css("--ink"), fontSize: 12 } },
+      axisLine: { show: false }, axisLabel: { color: css("--ink"), fontSize: chartFont() } },
     series: [
       { // conector entre os dois preços
         type: "custom", silent: true, data: rows.map((m, i) => [m.blended_batch_usd_1m, m.blended_usd_1m, i]),
@@ -519,9 +529,9 @@ function renderBatch(models) {
         },
         encode: { x: [0, 1], y: 2 }, z: 1,
       },
-      { type: "scatter", name: "Padrão", symbolSize: 10, z: 2,
+      { type: "scatter", name: "Padrão", symbolSize: dot, z: 2,
         data: rows.map((m, i) => [m.blended_usd_1m, i]), itemStyle: { color: css("--mark"), borderColor: surface, borderWidth: 2 } },
-      { type: "scatter", name: "Batch", symbolSize: 10, z: 3,
+      { type: "scatter", name: "Batch", symbolSize: dot, z: 3,
         data: rows.map((m, i) => ({ value: [m.blended_batch_usd_1m, i],
           itemStyle: m.batch_status === "official" ? { color: ink, borderColor: surface, borderWidth: 2 } : { color: surface, borderColor: ink, borderWidth: 2 } })) },
     ],
@@ -552,7 +562,7 @@ function renderTimeline(models) {
       type: "line", name: "Recorde", silent: true, step: "end", symbol: "none", z: 5,
       data: [...record.map(point), { value: [today > last.release_date ? today : last.release_date, scoreOf(last)], m: last }],
       lineStyle: { color: css("--frontier"), width: 2 },
-      endLabel: { show: !isNarrow(), color: css("--ink"), fontSize: 12, fontWeight: 600, formatter: () => last.display_name, distance: 6 },
+      endLabel: { show: !isNarrow(), color: css("--ink"), fontSize: chartFont(), fontWeight: 600, formatter: () => last.display_name, distance: 6 },
     });
   }
   series.push(hitLayer(pts.map(point)));
@@ -565,7 +575,7 @@ function renderTimeline(models) {
     ...baseOption(),
     grid: { left: 56, right: isNarrow() ? 20 : 140, top: 32, bottom: 32 },
     xAxis: axisStyle({ type: "time", splitLine: { show: false },
-      axisLabel: { color: css("--muted"), fontSize: 12, formatter: (v) => new Date(v).toLocaleDateString("pt-BR", { month: "short", year: "2-digit" }) } }),
+      axisLabel: { color: css("--muted"), fontSize: chartFont(), formatter: (v) => new Date(v).toLocaleDateString("pt-BR", { month: "short", year: "2-digit" }) } }),
     yAxis: yMetricAxis(),
     series,
   }, true);
