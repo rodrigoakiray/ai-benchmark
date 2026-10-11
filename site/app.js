@@ -832,6 +832,8 @@ async function main() {
     box.hidden = false;
     return;
   }
+  // a fonte da web muda a altura dos textos; o ECharts mede o contêiner só no primeiro desenho
+  await document.fonts.ready;
   buildMetrics();
   state.metric = DATA.meta.primary_metric in METRICS ? DATA.meta.primary_metric : "eci";
   document.getElementById("metric-select").value = state.metric;
