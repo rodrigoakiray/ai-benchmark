@@ -20,7 +20,7 @@ O `tools/run_pipeline.py` executa tudo abaixo e para no primeiro erro. Rode pass
 7. `tools/build_scorecard.py` → `gold/llm/model_scorecard`, com os índices por aplicação de `config/applications.json` → verificar: `validate_layer --layer gold`
 8. `tools/export_site.py` → `site/data/scorecard.json` e `meta.json`
 
-No GitHub Actions (`.github/workflows/weekly-refresh.yml`, segunda 06:00 BRT): pipeline → `check_secrets.py` →
+No GitHub Actions (`.github/workflows/weekly-refresh.yml`, segunda 08:00 BRT): pipeline → `check_secrets.py` →
 commit de `datalake/` e `site/data/` pelo bot → push → a Vercel publica.
 
 ## Outputs
