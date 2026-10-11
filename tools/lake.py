@@ -8,7 +8,7 @@ import requests
 ROOT = Path(__file__).resolve().parent.parent
 LAKE = ROOT / "datalake"
 DOMAIN = "llm"
-HTTP_HEADERS = {"User-Agent": "bench-ai-model (+https://github.com/rodrigoakiray/bench-ai-model)"}
+HTTP_HEADERS = {"User-Agent": "bench-ai-model (+https://github.com/rodrigoakiray/ai-benchmark)"}
 
 
 def today() -> str:

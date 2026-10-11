@@ -7,7 +7,7 @@ determinístico executa. Você é a camada **Agent**.
 
 **Tradeoff assumido:** estas regras priorizam cautela sobre velocidade. Em tarefas triviais, use bom senso.
 
-**Este projeto é versionado no GitHub** (`rodrigoakiray/bench-ai-model`, público) e roda nele: o **GitHub Actions**
+**Este projeto é versionado no GitHub** (`rodrigoakiray/ai-benchmark`, público) e roda nele: o **GitHub Actions**
 coleta e processa os dados toda semana e commita o snapshot; a **Vercel** publica `site/` a cada push em `main`.
 Código, workflows, agents, configuração, `datalake/` e `site/data/` entram no git (os dados são públicos).
 **Segredos nunca entram:** `.env`, `credentials.json`, `token.json`, chaves. `raw/` e `.tmp/` também ficam fora.
