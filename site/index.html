@@ -16,7 +16,7 @@
 </head>
 <body>
 <div class="shell">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <a class="brand" href="#geral">Fronteira dos LLMs</a>
     <nav aria-label="Análises">
       <ul class="nav" id="nav">
@@ -40,7 +40,18 @@
   </aside>
 
   <div class="workspace">
+    <header class="phone-bar">
+      <button type="button" class="menu-btn" id="menu-btn" aria-controls="sidebar" aria-expanded="false">
+        <span class="burger" aria-hidden="true"></span><span id="phone-title">Visão geral</span>
+      </button>
+      <button type="button" class="step" id="prev-view" aria-label="Análise anterior">‹</button>
+      <button type="button" class="step" id="next-view" aria-label="Próxima análise">›</button>
+      <button type="button" class="filters-btn" id="filters-btn" aria-controls="filters" aria-expanded="false">
+        <span class="pill">Filtros<span class="badge" id="filters-badge" hidden></span></span>
+      </button>
+    </header>
     <form class="filters" id="filters" aria-label="Filtros do painel" onsubmit="return false">
+      <div class="sheet-head"><strong>Filtros</strong><button type="button" id="filters-done">Pronto</button></div>
       <fieldset class="segmented">
         <legend>Preço</legend>
         <label><input type="radio" name="mode" value="standard" checked><span>Padrão</span></label>
@@ -75,6 +86,7 @@
         <span>Buscar modelo</span>
         <input type="search" name="query" placeholder="Ex.: claude, qwen, gpt-6" autocomplete="off">
       </label>
+      <div class="chips" id="highlight-chips-sheet" aria-live="polite"></div>
     </form>
 
     <main class="views">
@@ -128,15 +140,19 @@
 
       <!-- 4. ranking e orçamento -->
       <section class="view" id="view-ranking" data-view="ranking" aria-labelledby="ranking-title" hidden>
+        <div class="pane-tabs" role="tablist" aria-label="Ranking ou orçamento">
+          <button type="button" role="tab" data-target="ranking" aria-selected="true">Ranking</button>
+          <button type="button" role="tab" data-target="budget" aria-selected="false">Orçamento</button>
+        </div>
         <div class="two-up fill">
-          <div class="pane">
+          <div class="pane" data-pane="ranking">
             <div class="view-head stacked">
               <h2 id="ranking-title">Os 15 mais capazes</h2>
               <p class="note" id="ranking-note"></p>
             </div>
             <div class="chart fill" id="chart-ranking" role="img" aria-label="Ranking dos 15 modelos mais capazes"></div>
           </div>
-          <div class="pane">
+          <div class="pane" data-pane="budget">
             <div class="view-head stacked">
               <h2>Melhor modelo para cada orçamento</h2>
               <p class="note" id="budget-note">Os modelos da fronteira, do mais barato ao mais caro: nenhum outro é melhor sem custar mais.</p>
@@ -205,13 +221,17 @@
 
       <!-- 9. fontes e leitura -->
       <section class="view" id="view-fontes" data-view="fontes" aria-labelledby="sources-title" hidden>
+        <div class="pane-tabs" role="tablist" aria-label="Fontes ou como ler">
+          <button type="button" role="tab" data-target="sources" aria-selected="true">Fontes</button>
+          <button type="button" role="tab" data-target="method" aria-selected="false">Como ler</button>
+        </div>
         <div class="about fill">
-          <section aria-labelledby="sources-title">
+          <section aria-labelledby="sources-title" data-pane="sources">
             <h2 id="sources-title">Fontes</h2>
             <ul id="sources-list" class="sources"></ul>
             <p class="small">Atualizado toda segunda-feira pelo GitHub Actions. Código e dados: <a href="https://github.com/rodrigoakiray/bench-ai-model">github.com/rodrigoakiray/bench-ai-model</a>.</p>
           </section>
-          <section aria-labelledby="method-title">
+          <section aria-labelledby="method-title" data-pane="method">
             <h2 id="method-title">Como ler</h2>
             <dl class="method">
               <dt>Preço blended</dt>
@@ -231,6 +251,7 @@
     </main>
   </div>
 </div>
+<div class="scrim" id="scrim" hidden></div>
 
 <div id="load-error" class="load-error" hidden></div>
 

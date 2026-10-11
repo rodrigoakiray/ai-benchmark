@@ -99,6 +99,8 @@ a { color: inherit; text-underline-offset: 3px; }
 .views { padding: 16px; }
 .view { display: flex; flex-direction: column; gap: 10px; }
 .fill { min-height: 0; }
+/* só no celular: barra do topo, cabeçalho e chips do painel de filtros, abas e fundo escurecido */
+.phone-bar, .sheet-head, #highlight-chips-sheet, .pane-tabs, .scrim { display: none; }
 
 @media (min-width: 960px) and (min-height: 560px) {
   html, body { height: 100%; overflow: hidden; }
@@ -359,4 +361,169 @@ thead th { padding-top: 8px; padding-bottom: 8px; vertical-align: bottom; }
   .sources .what { font-size: 0.9rem; }
   .method { font-size: 0.95rem; }
   .method dt { margin-top: 12px; }
+}
+
+/* =========================================================================
+   iPhone em pé (até 599 px de largura): uma análise por tela, sem rolagem.
+   Barra no topo; o menu vira gaveta e os filtros, um painel que sobe de baixo.
+   ========================================================================= */
+@media (max-width: 599.98px) and (min-height: 480px) {
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  .shell { height: 100dvh; }
+  .workspace { display: grid; grid-template-rows: auto minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); height: 100dvh; } /* a tabela larga rola dentro dela, não alarga a tela */
+  .views { min-height: 0; padding: 10px 12px 12px; }
+  .view { height: 100%; min-height: 0; gap: 8px; }
+  .fill { flex: 1 1 0; }
+  .chart.fill, .two-up .chart.fill { height: auto; } /* desfaz a altura fixa do layout que rola */
+
+  /* barra do topo: menu com o nome da análise, anterior/próxima e filtros */
+  .phone-bar { display: flex; align-items: center; gap: 2px; height: 48px; padding: 0 6px 0 2px; border-bottom: 1px solid var(--hairline); }
+  .phone-bar button { font: inherit; color: var(--ink); background: none; border: 0; min-height: 44px; cursor: pointer; }
+  .phone-bar .menu-btn { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 8px; font-size: 1rem; font-weight: 700; text-align: left; }
+  #phone-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .burger, .burger::before, .burger::after { display: block; width: 18px; height: 2px; border-radius: 1px; background: currentColor; }
+  .burger { position: relative; flex: none; }
+  .burger::before, .burger::after { content: ""; position: absolute; left: 0; }
+  .burger::before { top: -6px; }
+  .burger::after { top: 6px; }
+  .phone-bar .step { flex: none; width: 44px; font-size: 1.7rem; line-height: 1; } /* com nome longo, quem encolhe é o título */
+  .phone-bar .step:disabled { opacity: 0.3; cursor: default; }
+  .phone-bar .filters-btn { flex: none; padding: 0 2px 0 6px; }
+  .pill { position: relative; display: inline-flex; align-items: center; padding: 7px 12px; border: 1px solid var(--axis); border-radius: 999px; font-size: 0.9rem; }
+  /* contador no canto da pílula, como os selos do iOS: a largura não muda e o título não encolhe */
+  .badge { position: absolute; top: -7px; right: -7px; min-width: 20px; padding: 1px 5px; border-radius: 999px; background: var(--ink); color: var(--surface); font-size: 0.72rem; font-weight: 700; line-height: 1.4; text-align: center; }
+
+  /* menu: gaveta que entra pela esquerda */
+  .sidebar {
+    position: fixed; inset: 0 auto 0 0; z-index: 30; width: min(320px, 86vw); height: 100dvh; overflow-y: auto;
+    gap: 18px; padding: 18px 14px; border: 0; background: var(--page); box-shadow: 8px 0 30px rgba(0, 0, 0, 0.18);
+    transform: translateX(-105%); visibility: hidden; transition: transform 0.2s ease, visibility 0.2s;
+  }
+  .menu-open .sidebar { transform: none; visibility: visible; }
+  .nav { flex-direction: column; overflow: visible; }
+  .nav a { padding: 12px; font-size: 1rem; }
+  .side-foot { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 10px; margin-top: auto; }
+  #highlight-chips { display: none; } /* no celular os destaques ficam no painel de filtros */
+  button.ghost { min-height: 44px; }
+
+  /* filtros: painel que sobe de baixo */
+  .filters {
+    position: fixed; inset: auto 0 0 0; z-index: 30; max-height: 85dvh; overflow-y: auto;
+    flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 12px;
+    padding: 0 16px 20px; border: 0; border-radius: 16px 16px 0 0; box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+    transform: translateY(105%); visibility: hidden; transition: transform 0.22s ease, visibility 0.22s;
+  }
+  .filters-open .filters { transform: none; visibility: visible; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1; padding: 6px 0 2px; background: var(--page); }
+  .sheet-head strong { font-size: 1.05rem; }
+  .sheet-head button { font: inherit; font-weight: 700; color: var(--ink); background: none; border: 0; min-height: 44px; padding: 0 2px 0 16px; cursor: pointer; }
+  .field { font-size: 0.8rem; }
+  .field.grow { flex: none; }
+  .field select { max-width: none; }
+  .filters select, .filters input[type="search"] { font-size: 16px; min-height: 44px; } /* abaixo de 16 px o iOS dá zoom ao focar */
+  .filters .segmented label { flex: 1 1 0; }
+  .filters .segmented span { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; font-size: 16px; }
+  #highlight-chips-sheet:not(:empty) { display: flex; flex-direction: row; flex-wrap: wrap; }
+  .chip { min-height: 36px; }
+  .scrim:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 20; background: rgba(8, 12, 16, 0.45); }
+
+  /* cabeçalho de cada tela e notas (até 3 linhas) */
+  .view-head { gap: 2px; }
+  .view h2 { font-size: 1.15rem; }
+  .note { font-size: 0.8rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .legend { gap: 2px 14px; font-size: 0.75rem; }
+  .chart { border-radius: 10px; }
+
+  /* visão geral: frase da semana e os 4 números em grade 2 × 2 */
+  .hero { gap: 8px; padding-bottom: 8px; }
+  .hero h1 { font-size: 1.35rem; }
+  .hero .hero-second { font-size: 0.68em; }
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+  .facts div { gap: 6px; }
+  .facts dd { font-size: 1.05rem; }
+  .facts dt { font-size: 0.75rem; line-height: 1.2; }
+
+  /* tabelas: texto um pouco menor; paginação com botões de 36 px */
+  :root { --heat-row: 22px; }
+  table { font-size: 0.8rem; }
+  th, td { padding: 0 6px; }
+  .model-org { font-size: 0.72rem; }
+  .pager { gap: 6px; }
+  .pager button { min-width: 36px; min-height: 36px; font-size: 1.1rem; line-height: 1; }
+
+  /* melhor por aplicação: 3 colunas, nota e preço embaixo do modelo; as linhas dividem a altura */
+  .apps { height: 100%; }
+  .apps th:nth-child(1) { width: 26%; }
+  .apps th:nth-child(2) { width: 34%; }
+  .apps th:nth-child(3) { width: 40%; } /* "Melhor custo-benefício" cabe numa linha */
+  .apps th:nth-child(4), .apps td:nth-child(4) { display: none; }
+  .apps thead th { font-size: 0.72rem; white-space: nowrap; }
+  .apps tbody th, .apps tbody td { padding: 5px 6px; line-height: 1.25; }
+  .apps tbody th { white-space: normal; }
+  .apps .line2 { display: none; }
+  .apps td .model-org { display: block; margin-left: 0; overflow: hidden; text-overflow: ellipsis; }
+  .apps.compact .model-org { display: none; }
+  .apps.compact tbody th, .apps.compact tbody td { padding-top: 3px; padding-bottom: 3px; line-height: 1.2; }
+
+  /* aplicabilidade: as 11 colunas na largura, cabeçalho vertical com a primeira palavra */
+  .heat { min-width: 0; border-spacing: 1px 2px; }
+  .heat thead th { padding: 4px 0; font-size: 0.7rem; }
+  .heat thead th:first-child { width: 32%; }
+  .heat thead th button { width: auto; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+  .heat tbody th { padding: 0 4px 0 0; font-size: 0.75rem; }
+  .heat tbody th .model-org { display: none; }
+  .heat td { padding: 0; font-size: 0.72rem; border-radius: 3px; }
+  .heat-legend { gap: 6px; font-size: 0.72rem; }
+  .heat-bar { width: 64px; }
+
+  /* todos os modelos: nome fixo à esquerda, as outras colunas rolam para o lado */
+  .models { min-width: 860px; }
+  .models thead th:first-child { width: 128px; }
+  .models .col-release { width: 84px; } .models .col-status { width: 104px; } .models .col-value { width: 80px; }
+  .models th:first-child, .models td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); box-shadow: 1px 0 0 var(--hairline); }
+  .models td:first-child .model-org { display: none; }
+  .small-seg span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; }
+
+  /* orçamento */
+  .budget th:nth-child(1) { width: 72px; } .budget th:nth-child(3) { width: 72px; } .budget th:nth-child(4) { width: 58px; }
+
+  /* ranking/orçamento e fontes/como ler: abas, uma de cada vez */
+  .pane-tabs { display: flex; flex: none; border: 1px solid var(--axis); border-radius: 10px; overflow: hidden; }
+  .pane-tabs button { flex: 1 1 0; min-height: 44px; font: inherit; font-size: 0.95rem; color: var(--ink); background: var(--surface); border: 0; cursor: pointer; }
+  .pane-tabs button + button { border-left: 1px solid var(--axis); }
+  .pane-tabs button[aria-selected="true"] { background: var(--ink); color: var(--surface); font-weight: 600; }
+  #view-ranking[data-show="ranking"] [data-pane="budget"], #view-ranking[data-show="budget"] [data-pane="ranking"],
+  #view-fontes[data-show="sources"] [data-pane="method"], #view-fontes[data-show="method"] [data-pane="sources"] { display: none; }
+  .two-up { grid-template-rows: minmax(0, 1fr); }
+  .about h2 { font-size: 1.1rem; margin-bottom: 6px; }
+  .sources { gap: 8px; margin-bottom: 10px; }
+  .sources li { font-size: 0.9rem; }
+  .method { font-size: 0.85rem; }
+  .method dt { margin-top: 6px; }
+
+  /* como é medido: aplicações numa fileira que rola para o lado; benchmarks paginados */
+  .master-detail { grid-template-rows: auto minmax(0, 1fr); gap: 8px; }
+  .app-list { flex-direction: row; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .app-list::-webkit-scrollbar { display: none; }
+  .app-list li { flex: none; }
+  .app-list button { align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid var(--axis); border-radius: 999px; font-size: 0.85rem; white-space: nowrap; }
+  .app-detail { display: flex; flex-direction: column; min-height: 0; padding: 10px 12px; }
+  .app-detail h3 { font-size: 1rem; }
+  .app-detail > p { margin: 2px 0 6px; font-size: 0.8rem; }
+  .app-detail .pager { margin-bottom: 4px; }
+  .bench-rows li { padding: 5px 0; font-size: 0.8rem; }
+  .bench-rows .what { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+}
+
+/* iPhone baixo (SE, ~375 × 548 úteis): um pouco mais compacto */
+@media (max-width: 599.98px) and (min-height: 480px) and (max-height: 600px) {
+  .phone-bar { height: 44px; }
+  .phone-bar .menu-btn { font-size: 0.95rem; }
+  .views { padding: 8px 10px 10px; }
+  .view { gap: 6px; }
+  .note { -webkit-line-clamp: 2; }
+  .hero h1 { font-size: 1.2rem; }
+  .facts dd { font-size: 0.95rem; }
+  .method { font-size: 0.8rem; }
+  .method dt { margin-top: 4px; }
 }

@@ -18,13 +18,16 @@ const BATCH_STATUS = {
 const VIEWS = ["geral", "aplicacoes", "aplicabilidade", "ranking", "batch", "evolucao", "modelos", "metodo", "fontes"];
 const MAX_HIGHLIGHT = 3;
 const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const FIXED_LAYOUT = window.matchMedia("(min-width: 960px) and (min-height: 560px)");
+// sem rolagem: notebook/monitor e iPhone em pé (as mesmas faixas do styles.css)
+const FIXED_LAYOUT = window.matchMedia("(min-width: 960px) and (min-height: 560px), (max-width: 599.98px) and (min-height: 480px)");
 const MONITOR = window.matchMedia("(min-width: 1280px) and (min-height: 860px)"); // mesma faixa do styles.css
+const PHONE = window.matchMedia("(max-width: 599.98px) and (min-height: 480px)"); // iPhone em pé
 
 const state = {
   view: "geral", mode: "standard", metric: "aa_intelligence_index", weights: "all", since: "all", query: "",
   highlight: [], // [{ org, slot }] — a cor segue o laboratório enquanto ele estiver destacado
   sort: { key: "score", dir: -1 }, cols: "prices", heatPage: 0, tablePage: 0, methodApp: null,
+  pane: { ranking: "ranking", fontes: "sources" }, benchPage: 0, // aba e página de benchmarks no celular
 };
 let DATA = { models: [], meta: null };
 const charts = {};
@@ -65,6 +68,7 @@ const priceOf = (m, mode = state.mode) => (mode === "batch" ? m.blended_batch_us
 const scoreOf = (m, metric = state.metric) => m[metric];
 const appOf = (metric = state.metric) => METRICS[metric]?.app;
 const appKeys = () => Object.keys(METRICS).filter((k) => METRICS[k].app);
+const primaryMetric = () => (DATA.meta.primary_metric in METRICS ? DATA.meta.primary_metric : "eci");
 /* como a métrica aparece no meio de uma frase: "índice de programação", "AA Index" */
 const metricPhrase = (metric = state.metric) =>
   (METRICS[metric].app ? `índice de ${METRICS[metric].app.label.toLowerCase()}` : METRICS[metric].short);
@@ -142,8 +146,10 @@ function renderPager(id, page, size, total, onPage) {
   const box = document.getElementById(id);
   const pages = Math.max(1, Math.ceil(total / size));
   if (pages <= 1) { box.replaceChildren(el("span", null, `${total} ${total === 1 ? "modelo" : "modelos"}`)); return; }
-  const prev = el("button", null, "‹ Anteriores"); prev.type = "button"; prev.disabled = page === 0;
-  const next = el("button", null, "Próximos ›"); next.type = "button"; next.disabled = page >= pages - 1;
+  // no celular só as setas (rótulo no aria-label)
+  const prev = el("button", null, PHONE.matches ? "‹" : "‹ Anteriores"); prev.type = "button"; prev.disabled = page === 0;
+  const next = el("button", null, PHONE.matches ? "›" : "Próximos ›"); next.type = "button"; next.disabled = page >= pages - 1;
+  if (PHONE.matches) { prev.setAttribute("aria-label", "Anteriores"); next.setAttribute("aria-label", "Próximos"); }
   prev.addEventListener("click", () => onPage(page - 1));
   next.addEventListener("click", () => onPage(page + 1));
   const info = el("span", null, `${page * size + 1}–${Math.min(total, (page + 1) * size)} de ${total}`);
@@ -299,15 +305,16 @@ function renderFrontier(models) {
   series.push(hitLayer(pts.map(point)));
 
   setLegend("frontier-legend", [
-    { kind: "line", label: "Fronteira de Pareto (melhor modelo para cada preço)" },
+    { kind: "line", label: isNarrow() ? "Fronteira de Pareto" : "Fronteira de Pareto (melhor modelo para cada preço)" },
     ...highlightLegendItems(),
     { kind: "dot", color: css("--mark"), label: "Demais modelos" },
   ]);
   chart("chart-frontier").setOption({
     ...baseOption(),
-    grid: { left: 56, right: 36, top: 36, bottom: 56 },
+    grid: isNarrow() ? { left: 40, right: 14, top: 30, bottom: 44 } : { left: 56, right: 36, top: 36, bottom: 56 },
     xAxis: axisStyle({
-      type: "log", logBase: 10, name: `Preço ${priceWord} blended (US$ por 1M tokens, escala log)`, nameLocation: "middle", nameGap: 32,
+      type: "log", logBase: 10, nameLocation: "middle", nameGap: isNarrow() ? 26 : 32,
+      name: isNarrow() ? `Preço ${priceWord} (US$/1M tokens, log)` : `Preço ${priceWord} blended (US$ por 1M tokens, escala log)`,
       axisLabel: { color: css("--muted"), fontSize: chartFont(), formatter: fmtTick, hideOverlap: true },
     }),
     yAxis: yMetricAxis(),
@@ -381,7 +388,7 @@ function renderHeat(models) {
   for (const k of keys) {
     const th = el("th"); th.scope = "col";
     if (k === state.metric) th.setAttribute("aria-sort", "descending");
-    const b = el("button", null, METRICS[k].short); b.type = "button"; b.title = `Ordenar por ${METRICS[k].short}`;
+    const b = el("button", null, PHONE.matches ? METRICS[k].short.split(" ")[0] : METRICS[k].short); b.type = "button"; b.title = `Ordenar por ${METRICS[k].short}`;
     b.addEventListener("click", () => selectMetric(k));
     th.append(b); head.append(th);
   }
@@ -389,7 +396,8 @@ function renderHeat(models) {
 
   const bar = el("i", "heat-bar");
   bar.style.background = `linear-gradient(90deg, ${css("--seq-lo")}, ${css("--seq-hi")})`;
-  document.getElementById("heat-legend").replaceChildren(el("span", null, `${HEAT_MIN} ou menos`), bar, el("span", null, "100 (líder)"));
+  document.getElementById("heat-legend").replaceChildren(el("span", null, PHONE.matches ? `≤ ${HEAT_MIN}` : `${HEAT_MIN} ou menos`), bar,
+    el("span", null, PHONE.matches ? "100" : "100 (líder)"));
   // tudo que ocupa altura vem antes da medição; a paginação definitiva tem a mesma altura da provisória
   renderPager("heat-pager", 0, 1, rows.length, () => {});
   const wrap = document.getElementById("heat-wrap");
@@ -499,11 +507,11 @@ function renderBatch(models) {
   setLegend("batch-legend", [
     { kind: "dot", color: css("--mark"), label: "Preço padrão" },
     { kind: "dot", color: ink, label: "Batch oficial" },
-    { kind: "ring", label: "Batch estimado pelo desconto documentado" },
+    { kind: "ring", label: isNarrow() ? "Batch estimado" : "Batch estimado pelo desconto documentado" },
   ]);
   chart("chart-batch").setOption({
     ...baseOption(),
-    grid: { left: 8, right: 32, top: 8, bottom: 44, containLabel: true },
+    grid: { left: 8, right: isNarrow() ? 16 : 32, top: 8, bottom: isNarrow() ? 40 : 44, containLabel: true },
     tooltip: {
       ...baseOption().tooltip, trigger: "axis", axisPointer: { type: "shadow", shadowStyle: { color: css("--wash") } },
       formatter: (ps) => {
@@ -515,7 +523,8 @@ function renderBatch(models) {
           `<div class="tt-row"><span>Economia</span><b>${esc(fmtUsd(save))} (${esc(fmtPct(m.batch_discount_pct))})</b></div></div>`;
       },
     },
-    xAxis: axisStyle({ type: "log", logBase: 10, name: "Preço blended (US$ por 1M tokens, escala log)", nameLocation: "middle", nameGap: 28,
+    xAxis: axisStyle({ type: "log", logBase: 10, nameLocation: "middle", nameGap: isNarrow() ? 24 : 28,
+      name: isNarrow() ? "Preço blended (US$/1M tokens, log)" : "Preço blended (US$ por 1M tokens, escala log)",
       min: (v) => v.min / 1.5, max: (v) => v.max * 1.5, // folga para o ponto não encostar na borda
       axisLabel: { color: css("--muted"), fontSize: chartFont(), formatter: fmtTick, showMinLabel: false, showMaxLabel: false } }),
     yAxis: { type: "category", data: rows.map((m) => m.display_name), axisTick: { show: false },
@@ -573,9 +582,10 @@ function renderTimeline(models) {
   ]);
   chart("chart-timeline").setOption({
     ...baseOption(),
-    grid: { left: 56, right: isNarrow() ? 20 : 140, top: 32, bottom: 32 },
+    grid: { left: isNarrow() ? 40 : 56, right: isNarrow() ? 16 : 140, top: 32, bottom: 32 },
     xAxis: axisStyle({ type: "time", splitLine: { show: false },
-      axisLabel: { color: css("--muted"), fontSize: chartFont(), formatter: (v) => new Date(v).toLocaleDateString("pt-BR", { month: "short", year: "2-digit" }) } }),
+      axisLabel: { color: css("--muted"), fontSize: chartFont(), hideOverlap: isNarrow(),
+        formatter: (v) => new Date(v).toLocaleDateString("pt-BR", { month: "short", year: "2-digit" }) } }),
     yAxis: yMetricAxis(),
     series,
   }, true);
@@ -680,15 +690,14 @@ function renderMethod() {
     b.setAttribute("aria-selected", String(app.id === state.methodApp));
     b.append(el("span", null, app.label), el("span", "count", `${app.benchmarks.length}`));
     b.title = `${app.benchmarks.length} benchmarks`;
-    b.addEventListener("click", () => { state.methodApp = app.id; renderMethod(); });
+    b.addEventListener("click", () => { state.methodApp = app.id; state.benchPage = 0; renderMethod(); });
     li.append(b);
     return li;
   }));
   const app = apps.find((a) => a.id === state.methodApp);
   const detail = document.getElementById("app-detail");
   if (!app) { detail.replaceChildren(); return; }
-  const ul = el("ul", "bench-rows");
-  for (const col of app.benchmarks) {
+  const items = app.benchmarks.map((col) => {
     const b = DATA.meta.benchmarks[col];
     const kind = b.source === "lmarena" ? "preferência de pessoas" : "teste";
     const li = el("li");
@@ -696,12 +705,26 @@ function renderMethod() {
     const head = el("span", "head");
     head.append(el("strong", null, b.label), el("span", "meta", `${SOURCE_NAME[b.source] ?? b.source}, ${kind}, ${b.models} modelos`));
     li.append(head, el("span", "what", b.description));
-    ul.append(li);
-  }
+    return li;
+  });
   const rule = app.min_objective === 0
     ? "Índice com pelo menos 2 destes benchmarks."
     : "Índice com pelo menos 2 destes benchmarks, um deles teste objetivo.";
-  detail.replaceChildren(el("h3", null, app.label), el("p", null, `${app.description} ${app.models} modelos com índice. ${rule}`), ul);
+  const ul = el("ul", "bench-rows");
+  ul.append(...items);
+  const pager = el("div", "pager"); pager.id = "bench-pager";
+  detail.replaceChildren(el("h3", null, app.label), el("p", null, `${app.description} ${app.models} modelos com índice. ${rule}`),
+    ...(PHONE.matches ? [pager] : []), ul);
+  if (PHONE.matches) document.querySelector('#app-list [aria-selected="true"]').scrollIntoView({ block: "nearest", inline: "nearest" });
+  // celular: os benchmarks que não cabem viram páginas, todas do tamanho da maior
+  if (!PHONE.matches || detail.scrollHeight <= detail.clientHeight + 1) return;
+  renderPager("bench-pager", 0, 1, 2, () => {}); // provisória, com a mesma altura da definitiva
+  const tallest = Math.max(...items.map((li) => li.offsetHeight));
+  const size = Math.max(1, Math.floor((detail.clientHeight - (detail.scrollHeight - ul.offsetHeight)) / tallest));
+  if (size >= items.length) { pager.remove(); return; }
+  state.benchPage = Math.min(state.benchPage, Math.ceil(items.length / size) - 1);
+  ul.replaceChildren(...items.slice(state.benchPage * size, (state.benchPage + 1) * size));
+  renderPager("bench-pager", state.benchPage, size, items.length, (p) => { state.benchPage = p; renderMethod(); });
 }
 
 /* ---------- tela 9: fontes ---------- */
@@ -715,20 +738,32 @@ function renderSources() {
 }
 
 /* ---------- filtros e destaques ---------- */
+/** Filtros fora do padrão, para o contador do botão no celular. */
+function activeFilters() {
+  return [state.mode !== "standard", state.metric !== primaryMetric(), state.weights !== "all", state.since !== "all", state.query.trim() !== ""]
+    .filter(Boolean).length + state.highlight.length;
+}
 function renderChips() {
-  const box = document.getElementById("highlight-chips");
-  box.replaceChildren(...[...state.highlight].sort((a, b) => a.slot - b.slot).map((h) => {
-    const b = el("button", "chip"); b.type = "button";
-    b.setAttribute("aria-label", `Remover destaque de ${h.org}`);
-    const sw = el("i", "swatch"); sw.style.background = slotColor(h.slot);
-    const x = el("span", "x", "×"); x.setAttribute("aria-hidden", "true");
-    b.append(sw, document.createTextNode(h.org), x);
-    b.addEventListener("click", () => { state.highlight = state.highlight.filter((o) => o !== h); renderView(); });
-    return b;
-  }));
+  const hl = [...state.highlight].sort((a, b) => a.slot - b.slot);
+  // um conjunto por contêiner: menu lateral (desktop) e painel de filtros (celular)
+  for (const box of document.querySelectorAll(".chips")) {
+    box.replaceChildren(...hl.map((h) => {
+      const b = el("button", "chip"); b.type = "button";
+      b.setAttribute("aria-label", `Remover destaque de ${h.org}`);
+      const sw = el("i", "swatch"); sw.style.background = slotColor(h.slot);
+      const x = el("span", "x", "×"); x.setAttribute("aria-hidden", "true");
+      b.append(sw, document.createTextNode(h.org), x);
+      b.addEventListener("click", () => { state.highlight = state.highlight.filter((o) => o !== h); renderView(); });
+      return b;
+    }));
+  }
   const select = document.getElementById("highlight-select");
   select.disabled = state.highlight.length >= MAX_HIGHLIGHT;
   select.options[0].textContent = select.disabled ? "Limite de 3 atingido" : "Escolha até 3";
+  const n = activeFilters();
+  const badge = document.getElementById("filters-badge");
+  badge.textContent = n; badge.hidden = n === 0;
+  document.getElementById("filters-btn").setAttribute("aria-label", n ? `Filtros, ${n} ativos` : "Filtros");
 }
 function fillOrgSelect() {
   const counts = new Map();
@@ -772,7 +807,16 @@ function go(view) {
   for (const a of document.querySelectorAll("#nav a")) {
     if (a.dataset.view === state.view) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   }
+  // celular: nome da análise na barra; anterior/próxima param nas pontas
+  const i = VIEWS.indexOf(state.view);
+  document.getElementById("phone-title").textContent = document.querySelector(`#nav a[data-view="${state.view}"]`).textContent;
+  document.getElementById("prev-view").disabled = i === 0;
+  document.getElementById("next-view").disabled = i === VIEWS.length - 1;
   renderView();
+}
+function step(delta) {
+  const i = VIEWS.indexOf(state.view) + delta;
+  if (i >= 0 && i < VIEWS.length) location.hash = VIEWS[i];
 }
 function bindNavigation() {
   window.addEventListener("hashchange", () => go(location.hash.slice(1)));
@@ -781,6 +825,53 @@ function bindNavigation() {
     const n = Number(e.key);
     if (n >= 1 && n <= VIEWS.length) location.hash = VIEWS[n - 1];
   });
+  document.getElementById("prev-view").addEventListener("click", () => step(-1));
+  document.getElementById("next-view").addEventListener("click", () => step(1));
+  // celular: deslizar o dedo para o lado troca de análise, exceto onde a tela rola para o lado
+  const area = document.querySelector(".views");
+  let start = null;
+  area.addEventListener("touchstart", (e) => {
+    const scroller = e.target.closest?.(".table-wrap, .app-list");
+    const t = e.touches[0];
+    start = PHONE.matches && e.touches.length === 1 && !(scroller && scroller.scrollWidth > scroller.clientWidth)
+      ? { x: t.clientX, y: t.clientY, at: e.timeStamp } : null;
+  }, { passive: true });
+  area.addEventListener("touchend", (e) => {
+    if (!start) return;
+    const t = e.changedTouches[0], dx = t.clientX - start.x, dy = t.clientY - start.y;
+    if (Math.abs(dx) >= 60 && Math.abs(dx) > 2 * Math.abs(dy) && e.timeStamp - start.at < 700) step(dx < 0 ? 1 : -1);
+    start = null;
+  }, { passive: true });
+}
+
+/* ---------- celular: gaveta do menu e painel de filtros ---------- */
+let sheetOpener = null;
+function closeSheets() {
+  const root = document.documentElement;
+  if (!root.classList.contains("menu-open") && !root.classList.contains("filters-open")) return;
+  root.classList.remove("menu-open", "filters-open");
+  document.getElementById("scrim").hidden = true;
+  for (const id of ["menu-btn", "filters-btn"]) document.getElementById(id).setAttribute("aria-expanded", "false");
+  sheetOpener?.focus();
+  sheetOpener = null;
+}
+function openSheet(cls, button, focusTarget) {
+  closeSheets();
+  document.documentElement.classList.add(cls);
+  document.getElementById("scrim").hidden = false;
+  button.setAttribute("aria-expanded", "true");
+  sheetOpener = button;
+  focusTarget?.focus();
+}
+function bindSheets() {
+  const menuBtn = document.getElementById("menu-btn"), filtersBtn = document.getElementById("filters-btn");
+  menuBtn.addEventListener("click", () => openSheet("menu-open", menuBtn, document.querySelector("#nav a[aria-current]")));
+  filtersBtn.addEventListener("click", () => openSheet("filters-open", filtersBtn, document.getElementById("filters-done")));
+  document.getElementById("filters-done").addEventListener("click", closeSheets);
+  document.getElementById("scrim").addEventListener("click", closeSheets);
+  document.getElementById("sidebar").addEventListener("click", (e) => { if (e.target.closest("a[href^='#']")) closeSheets(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheets(); });
+  PHONE.addEventListener("change", closeSheets); // girou o celular ou mudou a janela: nada fica aberto por cima
 }
 
 /* ---------- tema ---------- */
@@ -801,15 +892,39 @@ function bindTheme() {
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderView);
 }
 
+/* ---------- celular: Ranking | Orçamento e Fontes | Como ler, uma aba de cada vez ---------- */
+function applyPanes() {
+  for (const tabs of document.querySelectorAll(".pane-tabs")) {
+    const sec = tabs.closest(".view");
+    sec.dataset.show = state.pane[sec.dataset.view];
+    for (const b of tabs.querySelectorAll("button")) b.setAttribute("aria-selected", String(b.dataset.target === sec.dataset.show));
+  }
+}
+function bindPaneTabs() {
+  for (const tabs of document.querySelectorAll(".pane-tabs")) {
+    tabs.addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-target]");
+      if (!b) return;
+      state.pane[tabs.closest(".view").dataset.view] = b.dataset.target;
+      renderView();
+    });
+  }
+}
+
 /** Desenha só a tela visível; as outras são desenhadas quando o usuário chega nelas. */
 function renderView() {
   const models = filtered();
   renderChips();
+  applyPanes();
   switch (state.view) {
     case "geral": renderFrontier(models); break;
     case "aplicacoes": renderApps(models); break;
     case "aplicabilidade": renderHeat(models); break;
-    case "ranking": renderRanking(models); renderBudget(models); break;
+    case "ranking":
+      // no celular só a aba visível é desenhada (gráfico escondido não tem tamanho)
+      if (!PHONE.matches || state.pane.ranking === "ranking") renderRanking(models);
+      if (!PHONE.matches || state.pane.ranking === "budget") renderBudget(models);
+      break;
     case "batch": renderBatch(models); break;
     case "evolucao": renderTimeline(models); break;
     case "modelos": renderTable(models); break;
@@ -835,7 +950,7 @@ async function main() {
   // a fonte da web muda a altura dos textos; o ECharts mede o contêiner só no primeiro desenho
   await document.fonts.ready;
   buildMetrics();
-  state.metric = DATA.meta.primary_metric in METRICS ? DATA.meta.primary_metric : "eci";
+  state.metric = primaryMetric();
   document.getElementById("metric-select").value = state.metric;
   fillOrgSelect();
   renderHero();
@@ -843,6 +958,8 @@ async function main() {
   bindFilters();
   bindTheme();
   bindNavigation();
+  bindSheets();
+  bindPaneTabs();
   go(location.hash.slice(1));
   let resizeTimer;
   window.addEventListener("resize", () => {
