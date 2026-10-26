@@ -1,19 +1,20 @@
 {
-  "generated_at": "2026-10-19T11:15:51+00:00",
-  "snapshot_date": "2026-10-19",
+  "generated_at": "2026-10-26T11:16:27+00:00",
+  "snapshot_date": "2026-10-26",
   "snapshots": [
     "2026-10-10",
     "2026-10-11",
     "2026-10-12",
-    "2026-10-19"
+    "2026-10-19",
+    "2026-10-26"
   ],
   "primary_metric": "aa_intelligence_index",
   "counts": {
-    "models": 816,
+    "models": 821,
     "with_price": 368,
     "batch": {
-      "unavailable": 195,
-      "estimated": 108,
+      "unavailable": 194,
+      "estimated": 109,
       "official": 65
     }
   },
@@ -22,19 +23,19 @@
       "label": "AA Intelligence Index",
       "description": "Índice geral da Artificial Analysis: agentes, código, conhecimento e raciocínio científico.",
       "source": "artificial_analysis",
-      "models": 495
+      "models": 498
     },
     "eci": {
       "label": "Epoch Capabilities Index",
       "description": "Índice da Epoch AI que combina dezenas de benchmarks numa escala única.",
       "source": "epoch",
-      "models": 275
+      "models": 268
     },
     "arena_elo": {
       "label": "Arena Elo (texto)",
       "description": "Preferência de pessoas em conversas às cegas no LMArena, todas as categorias.",
       "source": "lmarena",
-      "models": 390
+      "models": 389
     },
     "aa_coding_index": {
       "label": "AA Coding Index",
@@ -46,13 +47,13 @@
       "label": "Arena: programação",
       "description": "Preferência de pessoas em perguntas de programação no LMArena.",
       "source": "lmarena",
-      "models": 385
+      "models": 384
     },
     "arena_webdev": {
       "label": "Code Arena (web)",
       "description": "Criar aplicações web completas a partir de um pedido, votado por pessoas.",
       "source": "lmarena",
-      "models": 111
+      "models": 120
     },
     "swe_bench_verified": {
       "label": "SWE-bench Verified",
@@ -76,7 +77,7 @@
       "label": "DeepSWE",
       "description": "Tarefas longas e originais de engenharia de software em 91 repositórios.",
       "source": "epoch",
-      "models": 26
+      "models": 0
     },
     "frontierswe": {
       "label": "FrontierSWE",
@@ -94,7 +95,7 @@
       "label": "MirrorCode",
       "description": "Reimplementar programas inteiros sem acesso ao código-fonte.",
       "source": "epoch",
-      "models": 9
+      "models": 10
     },
     "aa_agentic_index": {
       "label": "AA Agentic Index",
@@ -106,7 +107,7 @@
       "label": "APEX-Agents",
       "description": "Tarefas longas de banco de investimento, consultoria e direito em ambientes de trabalho simulados.",
       "source": "epoch",
-      "models": 50
+      "models": 51
     },
     "remote_labor_index": {
       "label": "Remote Labor Index",
@@ -118,7 +119,7 @@
       "label": "METR Time Horizons",
       "description": "Duração das tarefas de software que o modelo completa sozinho com 50% de sucesso.",
       "source": "epoch",
-      "models": 34
+      "models": 33
     },
     "osworld_2": {
       "label": "OSWorld 2.0",
@@ -130,7 +131,7 @@
       "label": "Search Arena",
       "description": "Respostas com busca na internet, votadas por pessoas no LMArena.",
       "source": "lmarena",
-      "models": 17
+      "models": 16
     },
     "deepresearch_bench": {
       "label": "DeepResearch Bench",
@@ -142,25 +143,25 @@
       "label": "SimpleQA Verified",
       "description": "Responder perguntas factuais curtas sem inventar (sem busca).",
       "source": "epoch",
-      "models": 81
+      "models": 83
     },
     "gpqa_diamond": {
       "label": "GPQA Diamond",
       "description": "Questões de pós-graduação em biologia, física e química.",
       "source": "epoch",
-      "models": 193
+      "models": 194
     },
     "hle": {
       "label": "Humanity's Last Exam",
       "description": "Questões de fronteira escritas por especialistas de dezenas de áreas.",
       "source": "epoch",
-      "models": 45
+      "models": 0
     },
     "arc_agi_2": {
       "label": "ARC-AGI-2",
       "description": "Quebra-cabeças visuais que exigem abstrair regras novas.",
       "source": "epoch",
-      "models": 85
+      "models": 87
     },
     "simplebench": {
       "label": "SimpleBench",
@@ -172,7 +173,7 @@
       "label": "LMCA",
       "description": "Julgar a qualidade de argumentos conceituais, comparado a notas de especialistas.",
       "source": "epoch",
-      "models": 129
+      "models": 134
     },
     "cl_bench": {
       "label": "CL-bench",
@@ -184,31 +185,31 @@
       "label": "Arena: pedidos difíceis",
       "description": "Preferência de pessoas em pedidos complexos e específicos.",
       "source": "lmarena",
-      "models": 390
+      "models": 389
     },
     "arena_expert": {
       "label": "Arena: especialistas",
       "description": "Preferência em perguntas de nível especialista.",
       "source": "lmarena",
-      "models": 342
+      "models": 341
     },
     "frontiermath_t1_3": {
       "label": "FrontierMath (níveis 1-3)",
       "description": "Problemas de matemática de pesquisa, inéditos.",
       "source": "epoch",
-      "models": 86
+      "models": 88
     },
     "frontiermath_t4": {
       "label": "FrontierMath (nível 4)",
       "description": "Os problemas mais difíceis do FrontierMath.",
       "source": "epoch",
-      "models": 67
+      "models": 69
     },
     "otis_aime": {
       "label": "AIME (OTIS)",
       "description": "Problemas no estilo da olimpíada americana AIME.",
       "source": "epoch",
-      "models": 182
+      "models": 184
     },
     "proofbench": {
       "label": "ProofBench",
@@ -220,31 +221,31 @@
       "label": "Arena: matemática",
       "description": "Preferência de pessoas em perguntas de matemática.",
       "source": "lmarena",
-      "models": 375
+      "models": 376
     },
     "arena_instruction_following": {
       "label": "Arena: seguir instruções",
       "description": "Respeitar formato, restrições e estrutura pedidos, votado por pessoas.",
       "source": "lmarena",
-      "models": 390
+      "models": 389
     },
     "arena_creative_writing": {
       "label": "Arena: escrita criativa",
       "description": "Preferência de pessoas em pedidos de escrita criativa.",
       "source": "lmarena",
-      "models": 388
+      "models": 387
     },
     "arena_writing_industry": {
       "label": "Arena: redação e linguagem",
       "description": "Preferência em tarefas profissionais de redação, literatura e idiomas.",
       "source": "lmarena",
-      "models": 389
+      "models": 388
     },
     "lech_mazur_writing": {
       "label": "Lech Mazur Writing",
       "description": "Contos que precisam incorporar 10 elementos obrigatórios.",
       "source": "epoch",
-      "models": 43
+      "models": 42
     },
     "fiction_livebench": {
       "label": "Fiction.LiveBench",
@@ -256,19 +257,19 @@
       "label": "AA Finanças e Contabilidade",
       "description": "Conhecimento de negócios, trabalho do conhecimento com agentes e raciocínio, aplicados a finanças.",
       "source": "artificial_analysis",
-      "models": 148
+      "models": 151
     },
     "aa_strategy_index": {
       "label": "AA Estratégia e Operações",
       "description": "Trabalho do conhecimento, conhecimento de negócios e uso de ferramentas.",
       "source": "artificial_analysis",
-      "models": 148
+      "models": 151
     },
     "aa_economics_index": {
       "label": "AA Economia",
       "description": "Conhecimento de economia e raciocínio.",
       "source": "artificial_analysis",
-      "models": 155
+      "models": 158
     },
     "gdpval": {
       "label": "GDPval",
@@ -280,13 +281,13 @@
       "label": "Arena: negócios e finanças",
       "description": "Preferência em perguntas de gestão, negócios e finanças.",
       "source": "lmarena",
-      "models": 383
+      "models": 382
     },
     "aa_legal_index": {
       "label": "AA Jurídico",
       "description": "Conhecimento jurídico, trabalho do conhecimento, raciocínio e não alucinação.",
       "source": "artificial_analysis",
-      "models": 148
+      "models": 151
     },
     "arena_legal": {
       "label": "Arena: jurídico e governo",
@@ -298,7 +299,7 @@
       "label": "AA Saúde e Medicina",
       "description": "Conhecimento médico, contexto longo clínico e não alucinação.",
       "source": "artificial_analysis",
-      "models": 65
+      "models": 100
     },
     "arena_medicine": {
       "label": "Arena: medicina e saúde",
@@ -310,13 +311,13 @@
       "label": "AA Engenharia",
       "description": "Conhecimento de engenharia, raciocínio científico e Terminal-Bench.",
       "source": "artificial_analysis",
-      "models": 148
+      "models": 151
     },
     "arena_science": {
       "label": "Arena: ciências",
       "description": "Preferência em perguntas de ciências da vida, físicas e sociais.",
       "source": "lmarena",
-      "models": 388
+      "models": 387
     },
     "surface_evolver": {
       "label": "Surface Evolver Bench",
@@ -328,7 +329,7 @@
       "label": "Vision Arena",
       "description": "Perguntas sobre imagens, votadas por pessoas no LMArena.",
       "source": "lmarena",
-      "models": 124
+      "models": 127
     },
     "vpct": {
       "label": "VPCT",
@@ -407,7 +408,7 @@
         "arena_hard_prompts",
         "arena_expert"
       ],
-      "models": 202
+      "models": 194
     },
     {
       "id": "math",
@@ -420,7 +421,7 @@
         "proofbench",
         "arena_math"
       ],
-      "models": 162
+      "models": 163
     },
     {
       "id": "writing",
@@ -434,7 +435,7 @@
         "lech_mazur_writing",
         "fiction_livebench"
       ],
-      "models": 395
+      "models": 394
     },
     {
       "id": "business",
@@ -447,7 +448,7 @@
         "gdpval",
         "arena_business"
       ],
-      "models": 160
+      "models": 163
     },
     {
       "id": "legal",
@@ -467,7 +468,7 @@
         "aa_health_index",
         "arena_medicine"
       ],
-      "models": 52
+      "models": 64
     },
     {
       "id": "science",
@@ -490,7 +491,7 @@
         "geobench",
         "furniture_assembly"
       ],
-      "models": 54
+      "models": 55
     }
   ],
   "sources": [
