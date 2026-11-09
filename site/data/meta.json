@@ -1,22 +1,23 @@
 {
-  "generated_at": "2026-11-02T11:11:23+00:00",
-  "snapshot_date": "2026-11-02",
+  "generated_at": "2026-11-09T11:10:55+00:00",
+  "snapshot_date": "2026-11-09",
   "snapshots": [
     "2026-10-10",
     "2026-10-11",
     "2026-10-12",
     "2026-10-19",
     "2026-10-26",
-    "2026-11-02"
+    "2026-11-02",
+    "2026-11-09"
   ],
   "primary_metric": "aa_intelligence_index",
   "counts": {
-    "models": 529,
-    "with_price": 250,
+    "models": 523,
+    "with_price": 246,
     "batch": {
-      "unavailable": 126,
+      "unavailable": 131,
       "official": 64,
-      "estimated": 60
+      "estimated": 51
     }
   },
   "benchmarks": {
@@ -24,19 +25,19 @@
       "label": "AA Intelligence Index",
       "description": "Índice geral da Artificial Analysis: agentes, código, conhecimento e raciocínio científico.",
       "source": "artificial_analysis",
-      "models": 46
+      "models": 61
     },
     "eci": {
       "label": "Epoch Capabilities Index",
       "description": "Índice da Epoch AI que combina dezenas de benchmarks numa escala única.",
       "source": "epoch",
-      "models": 269
+      "models": 251
     },
     "arena_elo": {
       "label": "Arena Elo (texto)",
       "description": "Preferência de pessoas em conversas às cegas no LMArena, todas as categorias.",
       "source": "lmarena",
-      "models": 390
+      "models": 391
     },
     "aa_coding_index": {
       "label": "AA Coding Index",
@@ -48,13 +49,13 @@
       "label": "Arena: programação",
       "description": "Preferência de pessoas em perguntas de programação no LMArena.",
       "source": "lmarena",
-      "models": 385
+      "models": 386
     },
     "arena_webdev": {
       "label": "Code Arena (web)",
       "description": "Criar aplicações web completas a partir de um pedido, votado por pessoas.",
       "source": "lmarena",
-      "models": 115
+      "models": 116
     },
     "swe_bench_verified": {
       "label": "SWE-bench Verified",
@@ -132,7 +133,7 @@
       "label": "Search Arena",
       "description": "Respostas com busca na internet, votadas por pessoas no LMArena.",
       "source": "lmarena",
-      "models": 16
+      "models": 17
     },
     "deepresearch_bench": {
       "label": "DeepResearch Bench",
@@ -144,13 +145,13 @@
       "label": "SimpleQA Verified",
       "description": "Responder perguntas factuais curtas sem inventar (sem busca).",
       "source": "epoch",
-      "models": 83
+      "models": 85
     },
     "gpqa_diamond": {
       "label": "GPQA Diamond",
       "description": "Questões de pós-graduação em biologia, física e química.",
       "source": "epoch",
-      "models": 182
+      "models": 176
     },
     "hle": {
       "label": "Humanity's Last Exam",
@@ -162,7 +163,7 @@
       "label": "ARC-AGI-2",
       "description": "Quebra-cabeças visuais que exigem abstrair regras novas.",
       "source": "epoch",
-      "models": 91
+      "models": 90
     },
     "simplebench": {
       "label": "SimpleBench",
@@ -174,7 +175,7 @@
       "label": "LMCA",
       "description": "Julgar a qualidade de argumentos conceituais, comparado a notas de especialistas.",
       "source": "epoch",
-      "models": 134
+      "models": 132
     },
     "cl_bench": {
       "label": "CL-bench",
@@ -186,13 +187,13 @@
       "label": "Arena: pedidos difíceis",
       "description": "Preferência de pessoas em pedidos complexos e específicos.",
       "source": "lmarena",
-      "models": 390
+      "models": 391
     },
     "arena_expert": {
       "label": "Arena: especialistas",
       "description": "Preferência em perguntas de nível especialista.",
       "source": "lmarena",
-      "models": 342
+      "models": 343
     },
     "frontiermath_t1_3": {
       "label": "FrontierMath (níveis 1-3)",
@@ -204,13 +205,13 @@
       "label": "FrontierMath (nível 4)",
       "description": "Os problemas mais difíceis do FrontierMath.",
       "source": "epoch",
-      "models": 69
+      "models": 70
     },
     "otis_aime": {
       "label": "AIME (OTIS)",
       "description": "Problemas no estilo da olimpíada americana AIME.",
       "source": "epoch",
-      "models": 171
+      "models": 166
     },
     "proofbench": {
       "label": "ProofBench",
@@ -222,25 +223,25 @@
       "label": "Arena: matemática",
       "description": "Preferência de pessoas em perguntas de matemática.",
       "source": "lmarena",
-      "models": 377
+      "models": 376
     },
     "arena_instruction_following": {
       "label": "Arena: seguir instruções",
       "description": "Respeitar formato, restrições e estrutura pedidos, votado por pessoas.",
       "source": "lmarena",
-      "models": 390
+      "models": 391
     },
     "arena_creative_writing": {
       "label": "Arena: escrita criativa",
       "description": "Preferência de pessoas em pedidos de escrita criativa.",
       "source": "lmarena",
-      "models": 388
+      "models": 389
     },
     "arena_writing_industry": {
       "label": "Arena: redação e linguagem",
       "description": "Preferência em tarefas profissionais de redação, literatura e idiomas.",
       "source": "lmarena",
-      "models": 389
+      "models": 390
     },
     "lech_mazur_writing": {
       "label": "Lech Mazur Writing",
@@ -258,19 +259,19 @@
       "label": "AA Finanças e Contabilidade",
       "description": "Conhecimento de negócios, trabalho do conhecimento com agentes e raciocínio, aplicados a finanças.",
       "source": "artificial_analysis",
-      "models": 50
+      "models": 63
     },
     "aa_strategy_index": {
       "label": "AA Estratégia e Operações",
       "description": "Trabalho do conhecimento, conhecimento de negócios e uso de ferramentas.",
       "source": "artificial_analysis",
-      "models": 51
+      "models": 63
     },
     "aa_economics_index": {
       "label": "AA Economia",
       "description": "Conhecimento de economia e raciocínio.",
       "source": "artificial_analysis",
-      "models": 50
+      "models": 63
     },
     "gdpval": {
       "label": "GDPval",
@@ -282,13 +283,13 @@
       "label": "Arena: negócios e finanças",
       "description": "Preferência em perguntas de gestão, negócios e finanças.",
       "source": "lmarena",
-      "models": 383
+      "models": 384
     },
     "aa_legal_index": {
       "label": "AA Jurídico",
       "description": "Conhecimento jurídico, trabalho do conhecimento, raciocínio e não alucinação.",
       "source": "artificial_analysis",
-      "models": 50
+      "models": 63
     },
     "arena_legal": {
       "label": "Arena: jurídico e governo",
@@ -300,7 +301,7 @@
       "label": "AA Saúde e Medicina",
       "description": "Conhecimento médico, contexto longo clínico e não alucinação.",
       "source": "artificial_analysis",
-      "models": 41
+      "models": 49
     },
     "arena_medicine": {
       "label": "Arena: medicina e saúde",
@@ -312,13 +313,13 @@
       "label": "AA Engenharia",
       "description": "Conhecimento de engenharia, raciocínio científico e Terminal-Bench.",
       "source": "artificial_analysis",
-      "models": 46
+      "models": 61
     },
     "arena_science": {
       "label": "Arena: ciências",
       "description": "Preferência em perguntas de ciências da vida, físicas e sociais.",
       "source": "lmarena",
-      "models": 388
+      "models": 389
     },
     "surface_evolver": {
       "label": "Surface Evolver Bench",
@@ -348,7 +349,7 @@
       "label": "Furniture Assembly",
       "description": "Achar o passo errado em fotos de montagem de móveis.",
       "source": "epoch",
-      "models": 35
+      "models": 37
     }
   },
   "applications": [
@@ -409,7 +410,7 @@
         "arena_hard_prompts",
         "arena_expert"
       ],
-      "models": 196
+      "models": 194
     },
     {
       "id": "math",
@@ -422,7 +423,7 @@
         "proofbench",
         "arena_math"
       ],
-      "models": 163
+      "models": 164
     },
     {
       "id": "writing",
@@ -436,7 +437,7 @@
         "lech_mazur_writing",
         "fiction_livebench"
       ],
-      "models": 389
+      "models": 390
     },
     {
       "id": "business",
@@ -449,7 +450,7 @@
         "gdpval",
         "arena_business"
       ],
-      "models": 62
+      "models": 74
     },
     {
       "id": "legal",
@@ -459,7 +460,7 @@
         "aa_legal_index",
         "arena_legal"
       ],
-      "models": 32
+      "models": 40
     },
     {
       "id": "health",
@@ -469,7 +470,7 @@
         "aa_health_index",
         "arena_medicine"
       ],
-      "models": 25
+      "models": 32
     },
     {
       "id": "science",
@@ -480,7 +481,7 @@
         "arena_science",
         "surface_evolver"
       ],
-      "models": 42
+      "models": 51
     },
     {
       "id": "vision",
@@ -492,7 +493,7 @@
         "geobench",
         "furniture_assembly"
       ],
-      "models": 55
+      "models": 56
     }
   ],
   "sources": [
